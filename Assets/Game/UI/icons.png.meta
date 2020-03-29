@@ -1,0 +1,212 @@
+fileFormatVersion: 2
+guid: cd8b188b9cff77848993338e597ee459
+timeCreated: 1449317051
+licenseType: Store
+TextureImporter:
+  fileIDToRecycleName:
+    21300000: uis_0
+    21300002: uis_1
+    21300004: uis_2
+    21300006: uis_3
+    21300008: uis_4
+    21300010: uis_5
+    21300012: uis_6
+    21300014: uis_7
+    21300016: uis_8
+  serializedVersion: 2
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    linearTexture: 0
+    correctGamma: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 0
+  cubemapConvolution: 0
+  cubemapConvolutionSteps: 8
+  cubemapConvolutionExponent: 1.5
+  seamlessCubemap: 0
+  textureFormat: -1
+  maxTextureSize: 256
+  textureSettings:
+    filterMode: -1
+    aniso: -1
+    mipBias: -1
+    wrapMode: 1
+  nPOTScale: 0
+  lightmap: 0
+  rGBM: 0
+  compressionQuality: 50
+  allowsAlphaSplitting: 0
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spritePixelsToUnits: 100
+  alphaIsTransparency: 1
+  textureType: 8
+  buildTargetSettings: []
+  spriteSheet:
+    sprites:
+    - name: uis_0
+      rect:
+        serializedVersion: 2
+        x: 68
+        y: 443
+        width: 95
+        height: 84
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -24, y: 22}
+        - {x: -24, y: -20}
+        - {x: -23, y: -21}
+        - {x: 24, y: -21}
+        - {x: 24, y: 22}
+    - name: uis_1
+      rect:
+        serializedVersion: 2
+        x: 374
+        y: 442
+        width: 293
+        height: 75
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -73.5, y: 19}
+        - {x: -73.5, y: -16}
+        - {x: -68.5, y: -19}
+        - {x: 69.5, y: -19}
+        - {x: 73.5, y: -16}
+        - {x: 73.5, y: 13}
+        - {x: 71.5, y: 19}
+    - name: uis_2
+      rect:
+        serializedVersion: 2
+        x: 842
+        y: 438
+        width: 95
+        height: 84
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -24, y: 21}
+        - {x: -24, y: -20}
+        - {x: -23, y: -21}
+        - {x: 24, y: -21}
+        - {x: 24, y: 21}
+    - name: uis_3
+      rect:
+        serializedVersion: 2
+        x: 40
+        y: 211
+        width: 95
+        height: 84
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -24, y: 22}
+        - {x: -24, y: -20}
+        - {x: -23, y: -21}
+        - {x: 24, y: -21}
+        - {x: 24, y: 22}
+    - name: uis_4
+      rect:
+        serializedVersion: 2
+        x: 279
+        y: 211
+        width: 95
+        height: 84
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -23.5, y: 22}
+        - {x: -23.5, y: -19}
+        - {x: -21.5, y: -21}
+        - {x: 24.5, y: -21}
+        - {x: 24.5, y: 22}
+    - name: uis_5
+      rect:
+        serializedVersion: 2
+        x: 502
+        y: 211
+        width: 95
+        height: 84
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -24, y: 22}
+        - {x: -24, y: -20}
+        - {x: -23, y: -21}
+        - {x: 24, y: -21}
+        - {x: 24, y: 22}
+    - name: uis_6
+      rect:
+        serializedVersion: 2
+        x: 697
+        y: 211
+        width: 95
+        height: 84
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -23.5, y: 22}
+        - {x: -23.5, y: -19}
+        - {x: -21.5, y: -21}
+        - {x: 24.5, y: -21}
+        - {x: 24.5, y: 22}
+    - name: uis_7
+      rect:
+        serializedVersion: 2
+        x: 890
+        y: 211
+        width: 95
+        height: 84
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -24, y: 22}
+        - {x: -24, y: -20}
+        - {x: -23, y: -21}
+        - {x: 24, y: -21}
+        - {x: 24, y: 22}
+    - name: uis_8
+      rect:
+        serializedVersion: 2
+        x: 40
+        y: 33
+        width: 962
+        height: 93
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -240.5, y: 24}
+        - {x: -240.5, y: -23}
+        - {x: 239.5, y: -23}
+        - {x: 240.5, y: -22}
+        - {x: 240.5, y: 24}
+    outline: []
+  spritePackingTag: 
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
