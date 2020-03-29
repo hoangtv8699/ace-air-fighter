@@ -125,8 +125,26 @@ public class PlayerController : MonoBehaviour
 
 	void PlaneAlive ()
 	{
+        targetPosition = playerTransform.position;
 
-		targetPosition = CameraController.touchPoint + Offset;
+        if (Input.GetKey(KeyCode.W) && (playerTransform.position + Vector3.forward).z <= 50)
+        {
+            targetPosition = playerTransform.position + Vector3.forward;
+        }
+        if (Input.GetKey(KeyCode.S) && (playerTransform.position + Vector3.forward).z >= -10)
+        {
+            targetPosition = playerTransform.position - Vector3.forward;
+        }
+        if (Input.GetKey(KeyCode.D) && (playerTransform.position + Vector3.right).x <= 60)
+        {
+            targetPosition = playerTransform.position + Vector3.right;
+        }
+        if (Input.GetKey(KeyCode.A) && (playerTransform.position + Vector3.right).x >= -60)
+        {
+            targetPosition = playerTransform.position - Vector3.right;
+        }
+        
+
 		playerTransform.position = Vector3.MoveTowards (playerTransform.position, targetPosition, Time.deltaTime * 50.1f);
 		
  

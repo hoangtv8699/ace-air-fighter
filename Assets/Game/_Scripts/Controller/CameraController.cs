@@ -21,37 +21,37 @@ public class CameraController : MonoBehaviour
 	void Update ()
 	{
 	
-		switch (currentCamState) {
+		//switch (currentCamState) {
 
-		case CameraStates.move:
+		//case CameraStates.move:
 		
 		 
-			if (Input.GetKey (KeyCode.Mouse0)) {
+		//	if (Input.GetKey (KeyCode.Mouse0)) {
 				
 				 
-				DrawRayToWorld ();
-			}
+		//		DrawRayToWorld ();
+		//	}
 
 
 
-			break;
-		}
+		//	break;
+		//}
 
 
 	}
 
-	void DrawRayToWorld ()
-	{
+	//void DrawRayToWorld ()
+	//{
 
 
-		Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
+	//	Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
 		
-		RaycastHit hit;
-		if (Physics.Raycast (ray, out hit, maskedLayed)) {
-			Vector3 playerMoveposition = new Vector3 (hit.point.x, 0, hit.point.z + 10);	 
-			touchPoint = playerMoveposition;
+	//	RaycastHit hit;
+	//	if (Physics.Raycast (ray, out hit, maskedLayed)) {
+	//		Vector3 playerMoveposition = new Vector3 (hit.point.x, 0, hit.point.z + 10);	 
+	//		touchPoint = playerMoveposition;
 			
 		 
-		}
-	}
+	//	}
+	//}
 }
