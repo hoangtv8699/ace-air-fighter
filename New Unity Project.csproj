@@ -274,10 +274,12 @@
     <Compile Include="Assets\Game\_Scripts\UI\BackButton.cs" />
     <Compile Include="Assets\Game\_Scripts\UI\buyPopUP.cs" />
     <Compile Include="Assets\Game\_Scripts\UI\ExitMenu.cs" />
+    <Compile Include="Assets\Game\_Scripts\UI\LevelSelection.cs" />
     <Compile Include="Assets\Game\_Scripts\UI\MainMenu.cs" />
     <Compile Include="Assets\Game\_Scripts\UI\MainMenuScreens.cs" />
     <Compile Include="Assets\Game\_Scripts\UI\ObjectRotate.cs" />
     <Compile Include="Assets\Game\_Scripts\UI\Playerselection.cs" />
+    <Compile Include="Assets\Game\_Scripts\UI\RoomSelection.cs" />
     <Compile Include="Assets\Game\_Scripts\UI\SoundController.cs" />
     <Compile Include="Assets\Game\_Scripts\UI\SpalshScreen.cs" />
     <Compile Include="Assets\Game\_Scripts\UI\StoreUpgradeHandler.cs" />

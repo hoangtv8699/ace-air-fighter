@@ -129,19 +129,19 @@ public class PlayerController : MonoBehaviour
 
         if (Input.GetKey(KeyCode.W) && (playerTransform.position + Vector3.forward).z <= 50)
         {
-            targetPosition = playerTransform.position + Vector3.forward;
+            targetPosition += Vector3.forward;
         }
         if (Input.GetKey(KeyCode.S) && (playerTransform.position + Vector3.forward).z >= -10)
         {
-            targetPosition = playerTransform.position - Vector3.forward;
+            targetPosition -= Vector3.forward;
         }
         if (Input.GetKey(KeyCode.D) && (playerTransform.position + Vector3.right).x <= 60)
         {
-            targetPosition = playerTransform.position + Vector3.right;
+            targetPosition += Vector3.right;
         }
         if (Input.GetKey(KeyCode.A) && (playerTransform.position + Vector3.right).x >= -60)
         {
-            targetPosition = playerTransform.position - Vector3.right;
+            targetPosition -= Vector3.right;
         }
         
 

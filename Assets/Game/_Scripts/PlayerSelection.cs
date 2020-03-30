@@ -23,7 +23,7 @@ public class PlayerSelection : MonoBehaviour
 	public Vector3 RotationSpeed ;
 	public Text[] infoTexts;
 	public Text priceText;
-	public int playerIndex ;
+	public static int playerIndex ;
 	public Text selectButtonText;
 	public Text popUpPriceText;
 	public GameObject NextMenuObject;
@@ -33,13 +33,13 @@ public class PlayerSelection : MonoBehaviour
 
 	 
 		playerIndex = 0;
-		PlayerPrefs.SetInt ("Player_Pucharse_status_of_" + playerIndex, 1);
+		//PlayerPrefs.SetInt ("Player_Pucharse_status_of_" + playerIndex, 1);
 		UpdateInfo ();
 
 		AceButton.buttonDown += OnButtonClick;
 
-		purchasePopUp.SetActive (false);
-		InsufficientFundsPopUp.SetActive (false);
+		//purchasePopUp.SetActive (false);
+		//InsufficientFundsPopUp.SetActive (false);
 		selectionMenu.SetActive (true);
 	
 	}
@@ -86,30 +86,33 @@ public class PlayerSelection : MonoBehaviour
 	}
 	void OnselectPress ()
 	{
-		if (selectButtonText.text.Contains ("Buy")) {
+		//if (selectButtonText.text.Contains ("Buy")) {
 
-			if (AllPlayers [playerIndex].price <= TotalCurrency.getCurrencyCount ()) {
+		//	if (AllPlayers [playerIndex].price <= TotalCurrency.getCurrencyCount ()) {
 
-				purchasePopUp.SetActive (true);
-				selectionMenu.SetActive (false);
-			} else {
+		//		purchasePopUp.SetActive (true);
+		//		selectionMenu.SetActive (false);
+		//	} else {
 
-				InsufficientFundsPopUp.SetActive (true);
-				selectionMenu.SetActive (false);
-			}
+		//		InsufficientFundsPopUp.SetActive (true);
+		//		selectionMenu.SetActive (false);
+		//	}
   
-		} else {
+		//} else {
 
-			this.gameObject.SetActive (false);
-			NextMenuObject.SetActive (true);
-		}
+		//	this.gameObject.SetActive (false);
+		//	NextMenuObject.SetActive (true);
+		//}
 
-	}
+        this.gameObject.SetActive(false);
+        NextMenuObject.SetActive(true);
+
+    }
 	void onPlayerConfirmation ()
 	{
 
-		PlayerPrefs.SetInt ("Player_Pucharse_status_of_" + playerIndex, 1);
-		TotalCurrency.Static.SubtractCurrency (AllPlayers [playerIndex].price);
+		//PlayerPrefs.SetInt ("Player_Pucharse_status_of_" + playerIndex, 1);
+		//TotalCurrency.Static.SubtractCurrency (AllPlayers [playerIndex].price);
 		UpdateInfo ();
 	}
 
@@ -117,8 +120,8 @@ public class PlayerSelection : MonoBehaviour
 	{
 		limitBoundsForIndex ();
 
-		priceText.text = "" + AllPlayers [playerIndex].price;//to display in selection menu
-		popUpPriceText.text = "Do you want to purchase this For " + AllPlayers [playerIndex].price + "?";//o display in popup menu
+		//priceText.text = "" + AllPlayers [playerIndex].price;//to display in selection menu
+		//popUpPriceText.text = "Do you want to purchase this For " + AllPlayers [playerIndex].price + "?";//o display in popup menu
 
 
 		for (int i=0; i < infoTexts.Length; i++) {
@@ -127,14 +130,16 @@ public class PlayerSelection : MonoBehaviour
 
 		}
 
-		if (PlayerPrefs.GetInt ("Player_Pucharse_status_of_" + playerIndex, 0) == 1) {
-			selectButtonText.text = "Select";
-			priceText.text = "Purchased";
-		} else {
-			selectButtonText.text = "Buy";
-		}
+		//if (PlayerPrefs.GetInt ("Player_Pucharse_status_of_" + playerIndex, 0) == 1) {
+		//	selectButtonText.text = "Select";
+		//	//priceText.text = "Purchased";
+		//} else {
+		//	selectButtonText.text = "Buy";
+		//}
 
-		AllPlayers [playerIndex].playerObject.SetActive (true);
+        selectButtonText.text = "Select";
+
+        AllPlayers [playerIndex].playerObject.SetActive (true);
 
 		PlayerPrefs.SetInt ("PlayerIndex", playerIndex);
 	}
