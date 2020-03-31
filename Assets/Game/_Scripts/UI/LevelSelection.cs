@@ -18,7 +18,7 @@ public class LevelSelection : MonoBehaviour {
 
         AceButton.buttonDown += OnButtonClick;
 
-        //selectionMenu.SetActive(true);
+        selectionMenu.SetActive(true);
 
     }
 

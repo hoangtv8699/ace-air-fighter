@@ -55,6 +55,7 @@ public class AceButton   : MonoBehaviour ,IPointerDownHandler,IPointerUpHandler
 	// Update is called once per frame
 	void onButtonDown (System.Object obj, EventArgs args)
 	{
+        
 		SoundController.Static.PlayClickSound ();
 		if (!obj.ToString ().Contains (gameObject.name))
 			return;
@@ -64,6 +65,9 @@ public class AceButton   : MonoBehaviour ,IPointerDownHandler,IPointerUpHandler
 			break;
 			
 		case ButtonType.TargetActiveDeactiveParent:
+                Debug.Log("gameobject : " + this.name);
+                Debug.Log("activate: " + ObjectToActivate.name);
+                Debug.Log("de activate: " + ObjectToDeActivate.name);
 			ObjectToActivate.SetActive (true);
 			ObjectToDeActivate.SetActive (false);
 			break;

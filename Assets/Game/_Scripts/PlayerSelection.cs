@@ -105,7 +105,7 @@ public class PlayerSelection : MonoBehaviour
 		//}
 
         this.gameObject.SetActive(false);
-        NextMenuObject.SetActive(true);
+        //NextMenuObject.SetActive(true);
 
     }
 	void onPlayerConfirmation ()

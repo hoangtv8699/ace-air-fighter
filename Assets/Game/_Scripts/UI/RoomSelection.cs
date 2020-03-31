@@ -19,7 +19,7 @@ public class RoomSelection : MonoBehaviour {
 
         AceButton.buttonDown += OnButtonClick;
 
-        //selectionMenu.SetActive(true);
+        selectionMenu.SetActive(true);
 
     }
 
@@ -49,8 +49,9 @@ public class RoomSelection : MonoBehaviour {
     }
     void OnselectPress()
     {
+  
         PlayerPrefs.SetInt("Level Select:", RoomIndex);
-
+  
     }
 
     void UpdateInfo()

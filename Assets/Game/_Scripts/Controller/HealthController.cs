@@ -56,9 +56,9 @@ public class  HealthController : MonoBehaviour
 	void OnTriggerEnter (Collider incoming)
 	{
 
- 
+        
 
-		if (incoming.name.Contains (CollisionNameCheck)) {
+        if (incoming.name.Contains (CollisionNameCheck)) {
 
 			//SoundController.Static.playSoundFromName ("bulletImapact");
 
@@ -87,12 +87,13 @@ public class  HealthController : MonoBehaviour
           
 			
 			if (isPlayer) {
-				Ace_ingameUiControl.Static.UpdateHealthProgress (HealthCount);
+				
 				HealthCount -= HealthDecrementCount;
 				Camera.main.GetComponent<CameraShake> ().enabled = true;
 				Invoke ("CameraShakeReset", 0.5f);
+                Ace_ingameUiControl.Static.UpdateHealthProgress(HealthCount);
 
-			} else {
+            } else {
 
 				if (isBigEnemy) {
 					float collisionDistance = Vector3.Distance (thisTransFrom.position, incoming.transform.position);
@@ -113,11 +114,33 @@ public class  HealthController : MonoBehaviour
 			
 			}
 			CheckDeadOrAlive ();
-		}
-		  
-	}
+        }
+        else if(incoming.tag.Contains("Enemy") && isPlayer)
+        {
+            Debug.Log("Tigger enter: " + incoming.tag);
+            HealthCount = 0;
+            Ace_ingameUiControl.Static.UpdateHealthProgress(HealthCount);
+            
+            Camera.main.GetComponent<CameraShake>().enabled = true;
+            Invoke("CameraShakeReset", 0.5f);
+            CheckDeadOrAlive();
+        }
+        //else if (incoming.tag.Contains("Player") && this.tag.Contains("Enemy"))
+        //{
+        //    Debug.Log("Tigger enter: " + incoming.tag);
+        //    HealthCount = 0;
+        //    Ace_ingameUiControl.Static.UpdateHealthProgress(HealthCount);
+            
+        //    Camera.main.GetComponent<CameraShake>().enabled = true;
+        //    Invoke("CameraShakeReset", 0.5f);
+        //    CheckDeadOrAlive();
+        //}
 
-	bool doOnce = false;
+
+
+    }
+
+    bool doOnce = false;
 
 	void CheckDeadOrAlive ()
 	{
