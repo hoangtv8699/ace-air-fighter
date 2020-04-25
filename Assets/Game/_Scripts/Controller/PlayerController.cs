@@ -14,6 +14,8 @@ public class PlayerController : MonoBehaviour
 	public float
 		planeMovementSpeed = 1.0f;
 	public GameObject shiledRenderObject;
+
+    private Client client;
 	public enum PlayerStates
 	{
 
@@ -31,8 +33,8 @@ public class PlayerController : MonoBehaviour
 	 public static GunController gunScript;
 	void OnEnable ()
 	{
-	
-		playerHealthScript = GetComponent<HealthController> ();
+        client = GameObject.FindGameObjectWithTag("client").GetComponent<Client>();
+        playerHealthScript = GetComponent<HealthController> ();
 		gunScript = GetComponent<GunController> ();
 
 	}
@@ -143,12 +145,19 @@ public class PlayerController : MonoBehaviour
         {
             targetPosition -= Vector3.right;
         }
-        
 
-		playerTransform.position = Vector3.MoveTowards (playerTransform.position, targetPosition, Time.deltaTime * 50.1f);
-		
- 
-		playerTransform.rotation = Quaternion.Euler (0, 0, PlayerRotationCurve.Evaluate( Mathf.PingPong(Time.time,1) ));
+        if (gameObject.name.Equals(client.getString("PlayerName")))
+        {
+            playerTransform.position = Vector3.MoveTowards(playerTransform.position, targetPosition, Time.deltaTime * 50.1f);
+        }
+
+        if (gameObject.name.Equals(client.getString("PlayerName")))
+        {
+            // send move
+            client.move(targetPosition);
+        }
+
+        playerTransform.rotation = Quaternion.Euler (0, 0, PlayerRotationCurve.Evaluate( Mathf.PingPong(Time.time,1) ));
 
 	}
 

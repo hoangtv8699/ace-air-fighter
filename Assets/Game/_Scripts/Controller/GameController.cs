@@ -40,6 +40,8 @@ public class GameController : MonoBehaviour
 	public GameObject[] SmokeParticles;
 	public GameObject[] PlayerParticleEffects;
 
+    private Client client;
+
 
 	void OnEnable ()
 	{
@@ -47,13 +49,24 @@ public class GameController : MonoBehaviour
 
 		Static = this;
 		CreatePlayerOnScene ();
-		 
-	}
+        client = GameObject.FindGameObjectWithTag("client").GetComponent<Client>();
+
+    }
 
 	#if UNITY_EDITOR
 	void Update ()
 	{
-		if (Input.GetKey (KeyCode.I)) {
+        
+        if (!client.IsPlaying())
+        {
+            Debug.Log("gamecontroller");
+            client.CreatePlayerOnScence();
+        }
+        else
+        {
+            // synchronized player
+        }
+        if (Input.GetKey (KeyCode.I)) {
 			PlayerPrefs.DeleteAll ();
 		}
 
@@ -63,10 +76,10 @@ public class GameController : MonoBehaviour
 
 	void CreatePlayerOnScene ()
 	{
-
-		player = GameObject.FindGameObjectWithTag ("Player");
-		if (player == null)
-			player = GameObject.Instantiate (PlayersPrefabs [PlayerPrefs.GetInt ("PlayerIndex", 0)]) as GameObject;
+        
+		//player = GameObject.FindGameObjectWithTag ("Player");
+		//if (player == null)
+		//	player = GameObject.Instantiate (PlayersPrefabs [PlayerPrefs.GetInt ("PlayerIndex", 0)]) as GameObject;
             
           
 	}
@@ -91,18 +104,18 @@ public class GameController : MonoBehaviour
 	void OnGameEnd ()
 	{
 
-		SoundController.Static.bgSound.enabled = false;
+		//SoundController.Static.bgSound.enabled = false;
 
-		foreach (MonoBehaviour script in ScriptsToDisable) {
-			script.enabled = false;
-		}
+		//foreach (MonoBehaviour script in ScriptsToDisable) {
+		//	script.enabled = false;
+		//}
 
 
-		Ace_ingameUiControl.Static.currentMenuState = inGameMenuStates.gameEnd;
-		Ace_ingameUiControl.Static.ChangeMenuState ();
+		//Ace_ingameUiControl.Static.currentMenuState = inGameMenuStates.gameEnd;
+		//Ace_ingameUiControl.Static.ChangeMenuState ();
 	}
 
-
+   
 
 
 

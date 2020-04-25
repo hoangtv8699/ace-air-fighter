@@ -36,10 +36,12 @@ public class AceButton   : MonoBehaviour ,IPointerDownHandler,IPointerUpHandler
 	public string stringValue = "PlayerIndex";
 	public int playerPrefValueToStore = 0;
 	public string levelToLoad;
+    private Component handle;
 
 	
 	void Start ()
 	{
+        
 		//Debug.LogError ("Update URL for Windows");
 		
 		//validateData ();
@@ -51,90 +53,117 @@ public class AceButton   : MonoBehaviour ,IPointerDownHandler,IPointerUpHandler
 	}
 
 	public static EventHandler buttonDown, buttonUp;
+
+    //bool check()
+    //{
+    //    Debug.Log("client check");
+    //    bool temp = false;
+    //    switch (gameObject.name)
+    //    {
+    //        case "Play":
+    //            temp = gameObject.GetComponent<CheckName>().execute();
+    //            break;
+    //        //case "SelectPlane":
+    //        //    temp = gameObject.GetComponent<CheckName>().execute();
+    //        //    break;
+    //        //case "SelectLevel":
+    //        //    temp = gameObject.GetComponent<CheckName>().execute();
+    //        //    break;
+    //        case "SelectRoom":
+    //            temp = gameObject.GetComponent<CheckName>().execute();
+    //            break;
+    //        default:
+    //            temp = true;
+    //            break;
+    //    }
+    //    return temp;
+    //}
 	
 	// Update is called once per frame
 	void onButtonDown (System.Object obj, EventArgs args)
 	{
-        
-		SoundController.Static.PlayClickSound ();
-		if (!obj.ToString ().Contains (gameObject.name))
-			return;
-		
-		switch (SelectedButtonType) {
-		case ButtonType.EventGenerator:
-			break;
-			
-		case ButtonType.TargetActiveDeactiveParent:
-                Debug.Log("gameobject : " + this.name);
-                Debug.Log("activate: " + ObjectToActivate.name);
-                Debug.Log("de activate: " + ObjectToDeActivate.name);
-			ObjectToActivate.SetActive (true);
-			ObjectToDeActivate.SetActive (false);
-			break;
-			
-			
-		case ButtonType.TargetActiveOnly:
-			ObjectToActivate.SetActive (true);
-			break;
-		case ButtonType.TargetDeActiveOnly:
-			ObjectToActivate.SetActive (false);
-			break;
+        //if (check()) {
+            SoundController.Static.PlayClickSound();
+            if (!obj.ToString().Contains(gameObject.name))
+                return;
 
-			
-		case ButtonType.ScriptActive:
-			behaviour.enabled = true;
-			break;
-			
-		case ButtonType.ScriptDisable:
-			behaviour.enabled = false;
-			break;
-			
-			
-		case ButtonType.SetPlayerPrefence:
-			PlayerPrefs.SetInt (stringValue, playerPrefValueToStore);
-			print ("PlayerPrefs" + PlayerPrefs.GetInt (stringValue, playerPrefValueToStore));
-			break;
-			
-		case ButtonType.OpenUrl:
-			OpenUrl ();
-			break;
-			
-		case ButtonType.ApplicationQuit:
-			Application.Quit ();
-			Debug.Log ("Exit");
-			break;
-			
-		case ButtonType.LoadNextLevel:
-			
-			
-			Application.LoadLevelAsync (Application.loadedLevel + 1);
-			
-			
-			break;
-			
-		case ButtonType.LoadLevel:
-			Application.LoadLevelAsync (levelToLoad);
-			
-			break;
-		case ButtonType.LoadedLevel:
-			Application.LoadLevel (Application.loadedLevel);
-			break;
-		case ButtonType.GamePaused:
-			Time.timeScale = 0;
-			break;
-		case ButtonType.Gameresumed:
-			Time.timeScale = 1;
-			break;
+            switch (SelectedButtonType) {
+                case ButtonType.EventGenerator:
+                    break;
+
+                case ButtonType.TargetActiveDeactiveParent:
+                    Debug.Log("gameobject : " + this.name);
+                    Debug.Log("activate: " + ObjectToActivate.name);
+                    Debug.Log("de activate: " + ObjectToDeActivate.name);
+                    ObjectToActivate.SetActive(true);
+                    ObjectToDeActivate.SetActive(false);
+                    break;
 
 
-		case ButtonType.FB:
-			Application.OpenURL ("https://www.facebook.com/AceGamesHyderabad/?fref=ts");
+                case ButtonType.TargetActiveOnly:
+                    ObjectToActivate.SetActive(true);
+                    break;
+                case ButtonType.TargetDeActiveOnly:
+                    ObjectToActivate.SetActive(false);
+                    break;
 
-			break;
-		case ButtonType.openReview:
-			Application.OpenURL (stringValue);
-			break;
-		}
+
+                case ButtonType.ScriptActive:
+                    behaviour.enabled = true;
+                    break;
+
+                case ButtonType.ScriptDisable:
+                    behaviour.enabled = false;
+                    break;
+
+
+                case ButtonType.SetPlayerPrefence:
+                    PlayerPrefs.SetInt(stringValue, playerPrefValueToStore);
+                    print("PlayerPrefs" + PlayerPrefs.GetInt(stringValue, playerPrefValueToStore));
+                    break;
+
+                case ButtonType.OpenUrl:
+                    OpenUrl();
+                    break;
+
+                case ButtonType.ApplicationQuit:
+                    Application.Quit();
+                    Debug.Log("Exit");
+                    break;
+
+                case ButtonType.LoadNextLevel:
+
+                    Debug.Log("load new level");
+
+                    Application.LoadLevelAsync(Application.loadedLevel + 1);
+
+
+                    break;
+
+                case ButtonType.LoadLevel:
+                    Application.LoadLevelAsync(levelToLoad);
+
+                    break;
+                case ButtonType.LoadedLevel:
+                    Application.LoadLevel(Application.loadedLevel);
+                    break;
+                case ButtonType.GamePaused:
+                    Time.timeScale = 0;
+                    break;
+                case ButtonType.Gameresumed:
+                    Time.timeScale = 1;
+                    break;
+
+
+                case ButtonType.FB:
+                    Application.OpenURL("https://www.facebook.com/AceGamesHyderabad/?fref=ts");
+
+                    break;
+                case ButtonType.openReview:
+                    Application.OpenURL(stringValue);
+                    break;
+            }
+       // }
 	}
 
 	#region ButtonUP

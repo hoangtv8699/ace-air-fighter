@@ -5,63 +5,55 @@ using System;
 
 public class RoomSelection : MonoBehaviour {
 
+    public GameObject LevelSelection, loading;
     public Text infoTexts;
+
     private int RoomIndex;
-    public int maxRoomIndex;
-    public GameObject NextMenuObject;
-    public GameObject selectionMenu;
+    private int maxRoomIndex;
+    private Client client;
+
+
+    private void Start()
+    {
+        
+
+    }
+
     void OnEnable()
     {
-
-
+        client = GameObject.FindGameObjectWithTag("client").GetComponent<Client>();
+        maxRoomIndex = client.getInt("Level" + client.getInt("LevelSelect"));
         RoomIndex = 1;
         UpdateInfo();
-
-        AceButton.buttonDown += OnButtonClick;
-
-        selectionMenu.SetActive(true);
-
     }
 
-    void OnDisable()
+    public void OnBack()
     {
-        AceButton.buttonDown -= OnButtonClick;
+        Debug.Log("gameobject : " + this.name);
+        Debug.Log("de activate: " + gameObject.name);
+        Debug.Log("activate: " + LevelSelection.name);
+        gameObject.SetActive(false);
+        LevelSelection.SetActive(true);
     }
-    void OnButtonClick(System.Object obj, EventArgs args)
-    {
 
-        switch (obj.ToString())
+    public void OnselectPress()
+    {
+        if (client.joinRoom(RoomIndex))
         {
-            case "Select":
-
-                OnselectPress();
-                break;
-
-            case "Next":
-                OnNext();
-                break;
-            case "Previous":
-                OnPrevious();
-                break;
+            client.setInt("RoomSelect", RoomIndex);
+            Debug.Log("gameobject : " + this.name);
+            Debug.Log("activate: " + loading.name);
+            Debug.Log("de activate: " + gameObject.name);
+            loading.SetActive(true);
+            gameObject.SetActive(false);
+            
         }
-
-
     }
-    void OnselectPress()
-    {
-  
-        PlayerPrefs.SetInt("Level Select:", RoomIndex);
-  
-    }
-
+ 
     void UpdateInfo()
     {
         limitBoundsForIndex();
-
         infoTexts.text = "Room " + RoomIndex;
-
-
-        PlayerPrefs.SetInt("PlayerIndex", RoomIndex);
     }
     public void OnNext()
     {

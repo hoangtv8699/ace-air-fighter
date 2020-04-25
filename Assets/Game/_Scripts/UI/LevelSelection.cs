@@ -4,62 +4,52 @@ using System.Collections;
 using System;
 public class LevelSelection : MonoBehaviour {
 
+    public GameObject RoomSelection, PlayerSelection, PlayerMesh;
     public Text infoTexts;
+
     private int LevelIndex;
-    public int maxLevelIndex;
-    public GameObject NextMenuObject;
-    public GameObject selectionMenu;
+    private int maxLevelIndex;
+    private Client client;
+
+
+    private void Start()
+    {
+        
+    }
     void OnEnable()
     {
-
-
+        client = GameObject.FindGameObjectWithTag("client").GetComponent<Client>();
+        maxLevelIndex = client.getInt("NumOfLevel");
         LevelIndex = 1;
         UpdateInfo();
-
-        AceButton.buttonDown += OnButtonClick;
-
-        selectionMenu.SetActive(true);
-
     }
 
-    void OnDisable()
+    public void OnBack()
     {
-        AceButton.buttonDown -= OnButtonClick;
+        Debug.Log("gameobject : " + this.name);
+        Debug.Log("de activate: " + gameObject.name);
+        Debug.Log("activate: " + PlayerMesh.name);
+        Debug.Log("activate: " + PlayerSelection.name);
+        gameObject.SetActive(false);
+        PlayerMesh.SetActive(true);
+        PlayerSelection.SetActive(true);
     }
-    void OnButtonClick(System.Object obj, EventArgs args)
+
+    public void OnselectPress()
     {
-
-        switch (obj.ToString())
-        {
-            case "Select":
-
-                OnselectPress();
-                break;
-
-            case "Next":
-                OnNext();
-                break;
-            case "Previous":
-                OnPrevious();
-                break;
-        }
-
-
-    }
-    void OnselectPress()
-    {
-        PlayerPrefs.SetInt("Level Select:", LevelIndex);
-
+        client.setInt("LevelSelect", LevelIndex);
+        Debug.Log("gameobject : " + this.name);
+        Debug.Log("activate: " + RoomSelection.name);
+        Debug.Log("de activate: " + gameObject.name);
+        RoomSelection.SetActive(true);
+        gameObject.SetActive(false);
+        
     }
 
     void UpdateInfo()
     {
         limitBoundsForIndex();
-
         infoTexts.text = "Level " + LevelIndex;
-
-
-        PlayerPrefs.SetInt("PlayerIndex", LevelIndex);
     }
     public void OnNext()
     {

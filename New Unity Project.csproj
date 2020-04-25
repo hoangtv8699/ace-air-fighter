@@ -236,6 +236,7 @@
     <Compile Include="Assets\Game\_Scripts\AceButton.cs" />
     <Compile Include="Assets\Game\_Scripts\bulletPoolManager.cs" />
     <Compile Include="Assets\Game\_Scripts\CameraShake.cs" />
+    <Compile Include="Assets\Game\_Scripts\Client\CheckName.cs" />
     <Compile Include="Assets\Game\_Scripts\Client\Client.cs" />
     <Compile Include="Assets\Game\_Scripts\Controller\AceHelper.cs" />
     <Compile Include="Assets\Game\_Scripts\Controller\BulletController.cs" />
