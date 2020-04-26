@@ -279,7 +279,7 @@ aa13baec1c19c8fa869cb21cb01a3767 Assembly-CSharp.dll:UnityStandardAssets.Water.W
 05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:.SplineInterpolator
 3ae0dad0b55a80319e1d57c2dce28da7 Assembly-CSharp.dll:UnityStandardAssets.ImageEffects.Tonemapping
 05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:.SpalshScreen
-05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:.Client
+04100a1870225c653ebf9ff120258174 Assembly-CSharp.dll:.Client
 f976c525d1d474d431ef185c783ca0b8 Assembly-CSharp.dll:.UnsufficentCoinsMenu
 ca99db57a181233f430d5ad6ea51afc3 Assembly-CSharp.dll:.Ace_ingameUiControl
 0f3d4bb7128a287827d041c696039525 Assembly-CSharp.dll:UnityStandardAssets.Utility.AutoMobileShaderSwitch

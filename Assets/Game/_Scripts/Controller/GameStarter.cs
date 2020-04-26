@@ -19,7 +19,6 @@ public class GameStarter : MonoBehaviour
 	public void startGame ()
 	{
         client.Ready();
-        client.isPlaying = true;
         gameObject.transform.GetChild(1).gameObject.SetActive(false);
         gameObject.transform.GetChild(2).gameObject.SetActive(true);
         

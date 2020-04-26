@@ -59,7 +59,6 @@ public class GameController : MonoBehaviour
         
         if (!client.IsPlaying())
         {
-            Debug.Log("gamecontroller");
             client.CreatePlayerOnScence();
         }
         else

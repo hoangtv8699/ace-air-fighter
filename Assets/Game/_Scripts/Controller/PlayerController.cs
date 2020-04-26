@@ -146,10 +146,10 @@ public class PlayerController : MonoBehaviour
             targetPosition -= Vector3.right;
         }
 
-        if (gameObject.name.Equals(client.getString("PlayerName")))
-        {
-            playerTransform.position = Vector3.MoveTowards(playerTransform.position, targetPosition, Time.deltaTime * 50.1f);
-        }
+        //if (gameObject.name.Equals(client.getString("PlayerName")))
+        //{
+        //    playerTransform.position = Vector3.MoveTowards(playerTransform.position, targetPosition, Time.deltaTime * 50.1f);
+        //}
 
         if (gameObject.name.Equals(client.getString("PlayerName")))
         {

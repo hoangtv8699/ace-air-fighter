@@ -10,6 +10,7 @@ using System.Threading;
 public class Client : MonoBehaviour {
 
     public GameObject[] PlayersPrefabs;
+    public GameObject[] EnemysPrefabs;
 
     private string clientName;
     private int TcpPortToConnect = 3308;
@@ -23,6 +24,7 @@ public class Client : MonoBehaviour {
     private StreamReader TcpReader;
     private Hashtable PlayerData;
     private List<Player> ListPlayer;
+    private List<GameObject> GameObjectPlayer;
     private Thread ReadThread;
 
 
@@ -37,6 +39,7 @@ public class Client : MonoBehaviour {
         TcpConnectToServer(hostToConnect, TcpPortToConnect);
         PlayerData = new Hashtable();
         ListPlayer = new List<Player>();
+        GameObjectPlayer = new List<GameObject>();
     }
     // Use this for initialization
     void Start () {
@@ -212,21 +215,6 @@ public class Client : MonoBehaviour {
 
     void handle()
     {
-        
-        Player a = new Player();
-        a.name = "Hidd";
-        a.enable = false;
-        a.score = 1;
-        a.plane = 1;
-        a.position = new Vector3(30, 0, 3);
-        a.health = 1;
-        a.shield = 1;
-        a.gun = 1;
-
-
-        ListPlayer.Add(a);
-        Debug.Log("add " + ListPlayer.Count);
-
         while (true)
         {
             Debug.Log("handle");
@@ -238,6 +226,52 @@ public class Client : MonoBehaviour {
             switch (splited[0])
             {
                 case "STATE":
+                    // for each player in state message
+                    for(int i = 1; i <= 3; i++)
+                    {
+                        if (!splited[i].Equals("null"))
+                        {
+                            // make Player a from json an check
+                            Player a = Player.CreateFromJSON(splited[i]);
+                            if (a != null)
+                            {
+                                if (IsPlaying())
+                                {
+                                    // if playing so update state game
+                                    Debug.Log("add " + a.name);
+                                    for (int j = 0; j < GameObjectPlayer.Count; j++)
+                                    {
+                                        if (a.name == GameObjectPlayer[j].name)
+                                        {
+                                            GameObjectPlayer[j].transform.position = Vector3.MoveTowards(GameObjectPlayer[j].transform.position, a.position, Time.deltaTime * 50.1f);
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    //else add if not in
+                                    Debug.Log("not playing: " + ListPlayer.Count);
+                                    bool isIn = false;
+                                    for (int j = 0; j < ListPlayer.Count; j++)
+                                    {
+                                        if (a.name == ListPlayer[j].name)
+                                        {
+                                            isIn = true;
+                                            break;
+                                        }
+                                    }
+
+                                    if (!isIn && ListPlayer.Count < 3)
+                                    {
+                                        Debug.Log("add " + a.name);
+                                        ListPlayer.Add(a);
+                                    }
+
+                                }
+                            }
+                        }
+
+                    }
                     // to do
                     break;
                 case "SHOT":
@@ -266,8 +300,14 @@ public class Client : MonoBehaviour {
                 Debug.Log("create");
                 p = GameObject.Instantiate(PlayersPrefabs[player.plane - 1], player.position, Quaternion.identity) as GameObject;
                 p.name = player.name;
+                GameObjectPlayer.Add(p);
             }
         }
+    }
+
+    public void CreateEnemyOnScence()
+    {
+        // to do
     }
 
     public void move(Vector3 position)
@@ -275,15 +315,9 @@ public class Client : MonoBehaviour {
         if (!IsPlaying())
             return;
 
-        Move m = new Move();
+        string move = "MOVE|" + position.x + "|" + position.y + "|" + position.z + "|" + getString("PlayerName");
 
-        m.name = getString("PlayerName");
-        m.position = position;
-
-        string JsonData = m.SaveToString();
-        Debug.Log(JsonData);
-
-        //TcpSend(JsonData);
+        TcpSend(move);
     }
 
     public void Ready()
@@ -309,18 +343,6 @@ public class Client : MonoBehaviour {
     }
 
     [Serializable]
-    public class Move
-    {
-        public string name;
-        public Vector3 position;
-
-        public string SaveToString()
-        {
-            return JsonUtility.ToJson(this);
-        }
-    }
-
-    [Serializable]
     public class Player
     {
         public string name;
@@ -341,13 +363,11 @@ public class Client : MonoBehaviour {
     [Serializable]
     public class Enemy
     {
-        public string name;
+        public string id;
         public bool enable;
         public int plane;
         public Vector3 position;
         public int health;
-        public int shield;
-        public int gun;
 
         public static Player CreateFromJSON(string jsonString)
         {
