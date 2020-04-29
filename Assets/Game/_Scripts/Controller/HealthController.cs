@@ -7,7 +7,7 @@ public class  HealthController : MonoBehaviour
 
 	public float HealthCount = 100;
 	public float HealthDecrementCount = 100;
-	public string CollisionNameCheck = "PlayerBullet";
+	public string CollisionNameCheck = "EnemyBullet";
 	 
 	public bool isPlayer = false;
 	public bool isBigEnemy = false;
@@ -16,10 +16,18 @@ public class  HealthController : MonoBehaviour
 	Transform thisTransFrom;
 	Rigidbody rigidBody;
 
-	void Start ()
+    private Client client;
+
+    void Start ()
 	{
-		//force setting minimum healthCoung and decrement
-		if (HealthCount < 50)
+        client = GameObject.FindGameObjectWithTag("client").GetComponent<Client>();
+        if (!isPlayer)
+        {
+            CollisionNameCheck = client.getString("PlayerName") + "Bullet";
+        }
+       
+        //force setting minimum healthCoung and decrement
+        if (HealthCount < 50)
 			HealthCount = 0;
 		if (HealthDecrementCount < 5)
 			HealthDecrementCount = 5;
@@ -45,23 +53,29 @@ public class  HealthController : MonoBehaviour
 
 		rigidBody = GetComponent<Rigidbody> ();
 
-		if (isPlayer) { 
-			Ace_ingameUiControl.Static.startingHealth = HealthCount;
-			Ace_ingameUiControl.Static.UpdateHealthProgress (HealthCount);
-		}      
+		if (isPlayer)
+        {
+            //Ace_ingameUiControl.Static.startingHealth = HealthCount;
+            //Ace_ingameUiControl.Static.UpdateHealthProgress (HealthCount);
+            UpdateHealthProgress(HealthCount);
+        }      
 	}
 
-	float lastParticleTime;
+    public void UpdateHealthProgress(float healthValue)
+    {
+        //float health = healthValue.Remap(0, HealthCount, 0, 100);
+        healthBar.fillAmount = Mathf.RoundToInt(healthValue) * 0.01f;
+        Debug.Log("health " + healthValue);
+    }
+
+    float lastParticleTime;
 
 	void OnTriggerEnter (Collider incoming)
 	{
-
-        
-
         if (incoming.name.Contains (CollisionNameCheck)) {
 
 			//SoundController.Static.playSoundFromName ("bulletImapact");
-
+            // make particle
 			if (Time.timeSinceLevelLoad - lastParticleTime > 1) {
 
 				GameObject particleObj;
@@ -87,44 +101,61 @@ public class  HealthController : MonoBehaviour
           
 			
 			if (isPlayer) {
-				
-				HealthCount -= HealthDecrementCount;
-				Camera.main.GetComponent<CameraShake> ().enabled = true;
-				Invoke ("CameraShakeReset", 0.5f);
-                Ace_ingameUiControl.Static.UpdateHealthProgress(HealthCount);
+
+                if (this.name.Equals(client.getString("PlayerName")))
+                {
+                    //Debug.Log("player get shot: " + this.name);
+                    client.PlayerGetShot();
+                    //HealthCount -= HealthDecrementCount;
+                    Camera.main.GetComponent<CameraShake>().enabled = true;
+                    Invoke("CameraShakeReset", 0.5f);
+                    UpdateHealthProgress(HealthCount);
+                }
+                
 
             } else {
 
-				if (isBigEnemy) {
-					float collisionDistance = Vector3.Distance (thisTransFrom.position, incoming.transform.position);
+                //Debug.Log("enemy get shot: " + this.name);
+                if (HealthCount <= 20)
+                {
+                    client.Destroy(this.name);
+                }
+                else
+                {
+                    client.EnemyGetShot(this.name);
+                }
+                
 
-					if (collisionDistance < 15) {
+				//if (isBigEnemy) {
+				//	float collisionDistance = Vector3.Distance (thisTransFrom.position, incoming.transform.position);
+
+				//	if (collisionDistance < 15) {
  
-						HealthCount -= HealthDecrementCount * 2;
-					}
+				//		HealthCount -= HealthDecrementCount * 2;
+				//	}
 
-				}
+				//}
                  
-				HealthCount -= HealthDecrementCount;
-				Ace_ingameUiControl.Static.AddScore (10);
-				if (healthBar != null) {
-					healthBar.fillAmount = HealthCount * 0.01f;
-				}
+				//HealthCount -= HealthDecrementCount;
+				////Ace_ingameUiControl.Static.AddScore (10);
+				//if (healthBar != null) {
+				//	healthBar.fillAmount = HealthCount * 0.01f;
+				//}
 			
 			
 			}
 			CheckDeadOrAlive ();
         }
-        else if(incoming.tag.Contains("Enemy") && isPlayer)
-        {
-            Debug.Log("Tigger enter: " + incoming.tag);
-            HealthCount = 0;
-            Ace_ingameUiControl.Static.UpdateHealthProgress(HealthCount);
+        //else if(incoming.tag.Contains("Enemy") && isPlayer)
+        //{
+        //    Debug.Log("Tigger enter: " + incoming.tag);
+        //    HealthCount = 0;
+        //    UpdateHealthProgress(HealthCount);
             
-            Camera.main.GetComponent<CameraShake>().enabled = true;
-            Invoke("CameraShakeReset", 0.5f);
-            CheckDeadOrAlive();
-        }
+        //    Camera.main.GetComponent<CameraShake>().enabled = true;
+        //    Invoke("CameraShakeReset", 0.5f);
+        //    CheckDeadOrAlive();
+        //}
         //else if (incoming.tag.Contains("Player") && this.tag.Contains("Enemy"))
         //{
         //    Debug.Log("Tigger enter: " + incoming.tag);
@@ -142,7 +173,7 @@ public class  HealthController : MonoBehaviour
 
     bool doOnce = false;
 
-	void CheckDeadOrAlive ()
+	public void CheckDeadOrAlive ()
 	{
 
 		if (HealthCount <= 0 && doOnce == false) {
@@ -151,7 +182,7 @@ public class  HealthController : MonoBehaviour
 			this.enabled = false;
 			Destroy (gameObject, 15);
 
-			if (this.name.Contains ("Player")) {
+			if (this.tag.Contains ("Player")) {
 				GameController.Static.OnPlayerDead ();
 				SoundController.Static.playSoundFromName ("Blast");
 				CameraShake shakeInstance = Camera.main.GetComponent<CameraShake> ();
@@ -159,7 +190,7 @@ public class  HealthController : MonoBehaviour
 				shakeInstance.shake = 2f;
 
 				gameObject.SetActive (false);
-				Ace_ingameUiControl.Static.UpdateHealthProgress (0);
+				UpdateHealthProgress (0);
 
 			} else {//for enemies
 				if (rigidBody != null) {
@@ -180,12 +211,15 @@ public class  HealthController : MonoBehaviour
 				smokeObj = GameObject.Instantiate (smokeObj, thisTransFrom.position, Quaternion.identity) as GameObject;
 				smokeObj.transform.parent = thisTransFrom;
 
+                client.Destroy(this.name);
+
 			}
 
 			if (pickUp) {
-				pickUp = GameObject.Instantiate (pickUp, thisTransFrom.position, Quaternion.identity) as GameObject;
-
-				Destroy (pickUp, 15);
+				GameObject pick = GameObject.Instantiate (pickUp, thisTransFrom.position, Quaternion.identity) as GameObject;
+                pick.name = pickUp.name + "|" + this.name;
+                Debug.Log("create item: " + pick.name);
+				Destroy (pick, 15);
 
 			}
 

@@ -6,6 +6,7 @@ using System.Net.Sockets;
 using System;
 using System.Text;
 using System.Threading;
+using UnityEngine.UI;
 
 public class Client : MonoBehaviour {
 
@@ -19,14 +20,17 @@ public class Client : MonoBehaviour {
     private bool TcpReady;
     public bool isPlaying;
     private bool isReady;
+    private bool guard;
     private NetworkStream TcpStream;
     private StreamWriter TcpWriter;
     private StreamReader TcpReader;
     private Hashtable PlayerData;
     private List<Player> ListPlayer;
+    private Queue<Enemy> QueueEnemy;
     private List<GameObject> GameObjectPlayer;
+    //private List<GameObject> GameObjectEnemy;
+    private Queue<string> DataReaded;
     private Thread ReadThread;
-
 
 
     private void OnEnable()
@@ -34,12 +38,16 @@ public class Client : MonoBehaviour {
         TcpReady = false;
         isPlaying = false;
         isReady = false;
+        guard = false;
         Debug.Log("start tcp");
         DontDestroyOnLoad(gameObject);
         TcpConnectToServer(hostToConnect, TcpPortToConnect);
         PlayerData = new Hashtable();
         ListPlayer = new List<Player>();
+        QueueEnemy = new Queue<Enemy>();
         GameObjectPlayer = new List<GameObject>();
+        //GameObjectEnemy = new List<GameObject>();
+        DataReaded = new Queue<string>();
     }
     // Use this for initialization
     void Start () {
@@ -48,13 +56,28 @@ public class Client : MonoBehaviour {
     }
 
     public void setInt(string key, int value)
-    { 
-        PlayerData.Add(key, value);
+    {
+        if (!PlayerData.ContainsKey(key))
+        {
+            PlayerData.Add(key, value);
+        }
+        else
+        {
+            PlayerData[key] = value;
+        }
+        
     }
 
     public void setString(string key, string value)
     {
-        PlayerData.Add(key, value);
+        if (!PlayerData.ContainsKey(key))
+        {
+            PlayerData.Add(key, value);
+        }
+        else
+        {
+            PlayerData[key] = value;
+        }
     }
 
     public int getInt(string key)
@@ -144,7 +167,7 @@ public class Client : MonoBehaviour {
         
         if(TcpSend("LOGIN|" + name))
         {
-            Debug.Log("LOGIN|" + name);
+            //Debug.Log("LOGIN|" + name);
         }
         else
         {
@@ -153,10 +176,10 @@ public class Client : MonoBehaviour {
 
         data = TcpRead();
 
-        TcpReady = false;
-        TcpConnectToServer(hostToConnect, TcpPortToConnect);
+        //TcpReady = false;
+        //TcpConnectToServer(hostToConnect, TcpPortToConnect);
 
-        Debug.Log("test data: " + data);
+        //Debug.Log("test data: " + data);
         if (data != null && check(data.Split('|')))
         {
             setString("PlayerName", name);
@@ -164,7 +187,7 @@ public class Client : MonoBehaviour {
         }
         return false;
     }
-
+       
     private bool check(string[] data)
     {
         if (data[0].Equals("LOGIN") && int.Parse(data[1]) == 1)
@@ -175,7 +198,7 @@ public class Client : MonoBehaviour {
 
         return false;
     }
-
+    // set room and level
     private void setRoomAndLevel(string[] data)
     {
         int NumOfLevel = int.Parse(data[2]);
@@ -196,121 +219,299 @@ public class Client : MonoBehaviour {
         int LevelSelect = getInt("LevelSelect");
         int NumberOfRoom = getInt("Level" + LevelSelect);
 
+        //Debug.Log("JOIN_ROOM|" + name + "|" + (LevelSelect * NumberOfRoom + RoomIndex) + "|" + getInt("PlayerIndex"));
+
         TcpSend("JOIN_ROOM|" + name + "|" + (LevelSelect * NumberOfRoom + RoomIndex) + "|" + getInt("PlayerIndex"));
         data = TcpRead().Split('|');
 
-        Debug.Log(data[0] + data[1]);
+        //Debug.Log(data[0] + data[1]);
 
         if (data[0].Equals("JOIN_ROOM") && int.Parse(data[1]) == 1)
         {
             temp = true;
 
             // create a new thread to handle read data
-            ReadThread = new Thread(handle);
+            ReadThread = new Thread(ReadData);
             ReadThread.Start();
 
         }
         return temp;
     }
-
-    void handle()
+    // read data from server message
+    void ReadData()
     {
-        while (true)
+        try
         {
-            Debug.Log("handle");
-            string data = TcpRead();
-            Debug.Log(data);
-
-            string[] splited = data.Split('|');
-
-            switch (splited[0])
+            while (true)
             {
-                case "STATE":
-                    // for each player in state message
-                    for(int i = 1; i <= 3; i++)
-                    {
-                        if (!splited[i].Equals("null"))
+                string data = TcpRead();
+                //Debug.Log(data);
+
+                string[] splited = data.Split('|');
+
+                switch (splited[0])
+                {
+                    case "STATE":
+                        
+                        // for each player in state message
+                        for (int i = 1; i < Mathf.Min(splited.Length, 4); i++)
                         {
-                            // make Player a from json an check
-                            Player a = Player.CreateFromJSON(splited[i]);
-                            if (a != null)
+                            if (!splited[i].Equals("null"))
                             {
-                                if (IsPlaying())
+                                // make Player a from json an check
+                                Player a = Player.CreateFromJSON(splited[i]);
+                                if (a != null)
                                 {
-                                    // if playing so update state game
-                                    Debug.Log("add " + a.name);
-                                    for (int j = 0; j < GameObjectPlayer.Count; j++)
+                                    if (IsPlaying())
                                     {
-                                        if (a.name == GameObjectPlayer[j].name)
+                                        // if playing so update state game
+                                        for (int j = 0; j < ListPlayer.Count; j++)
                                         {
-                                            GameObjectPlayer[j].transform.position = Vector3.MoveTowards(GameObjectPlayer[j].transform.position, a.position, Time.deltaTime * 50.1f);
+                                            if (a.name == ListPlayer[j].name)
+                                            {
+                                                ListPlayer[j] = a;
+                                            }
                                         }
+
+
                                     }
-                                }
-                                else
-                                {
-                                    //else add if not in
-                                    Debug.Log("not playing: " + ListPlayer.Count);
-                                    bool isIn = false;
-                                    for (int j = 0; j < ListPlayer.Count; j++)
+                                    else
                                     {
-                                        if (a.name == ListPlayer[j].name)
+                                        //else add if not in
+                                        Debug.Log("not playing: " + ListPlayer.Count);
+                                        bool isIn = false;
+                                        for (int j = 0; j < ListPlayer.Count; j++)
                                         {
-                                            isIn = true;
-                                            break;
+                                            if (a.name == ListPlayer[j].name)
+                                            {
+                                                isIn = true;
+                                                break;
+                                            }
                                         }
-                                    }
 
-                                    if (!isIn && ListPlayer.Count < 3)
-                                    {
-                                        Debug.Log("add " + a.name);
-                                        ListPlayer.Add(a);
-                                    }
+                                        if (!isIn && ListPlayer.Count < 3)
+                                        {
+                                            //Debug.Log("add " + a.name);
+                                            ListPlayer.Add(a);
+                                        }
 
+                                    }
                                 }
                             }
+
                         }
 
-                    }
-                    // to do
-                    break;
-                case "SHOT":
-                    // to do
-                    break;
-                case "START":
-                    // to do
-                    OnStart();
-                    break;
-            }
+                        for (int i = 4; i < splited.Length; i++)
+                        {
+                            if (!splited[i].Equals("null"))
+                            {
+                                // make Enemy a from json an check
+                                Enemy a = Enemy.CreateFromJSON(splited[i]);
+                                if (a != null)
+                                {
+                                    QueueEnemy.Enqueue(a);
+                                }
+                            }
 
+                        }
+                        break;
+                    case "SHOT":
+                        // push data to stack for main thread and use guard
+                        while (guard) ;
+                        guard = true;
+                        DataReaded.Enqueue(data);
+                        guard = false;
+                        // to do
+                        break;
+                    case "START":
+                        // to do
+                        OnStart();
+                        break;
+                    default:
+                        // push data to stack for main thread and use guard
+                        Debug.Log("data readed: " + data);
+                        while (guard) ;
+                        guard = true;
+                        DataReaded.Enqueue(data);
+                        guard = false;
+                        // to do
+                        break;
+                }
+
+            }
+        }catch(Exception e)
+        {
+            Debug.Log(e);
         }
 
     }
+    // handle data in DataReaded
+    void handle()
+    {
+        if (!guard)
+        {
+            guard = true;
+            while(DataReaded.Count > 0)
+            {
+                string[] data = DataReaded.Dequeue().Split('|');
+                switch (data[0])
+                {
+                    case "SHOT":
+                        GameObject playerShot = GameObject.Find(data[1]);
+                        if (playerShot.active)
+                        {
+                            GunController gun = playerShot.GetComponent<GunController>();
+                            gun.FireBullets();
+                            Debug.Log("firebullet " + data[1]);
+                        }
+                        break;
+                    case "ITEM":
+                        switch (data[1])
+                        {
+                            case "SHIELD":
+                                //todo
+                                break;
+                            case "HEALTH":
+                                //todo
+                                break;
+                            case "GUN":
+                                GameObject player = GameObject.Find(data[3]);
+                                GameObject item = GameObject.Find("GunPickup" + "|" +data[2]);
 
+                                if(player != null)
+                                {
+                                    PlayerController playerscript = player.GetComponent<PlayerController>();
+                                    playerscript.IncreaseGun();
+                                }
+
+                                if (item != null)
+                                {
+                                    Destroy(item);
+                                }
+                                break;
+                        }
+                        break;
+                    case "SHOTED":
+                        HealthController enemyHealth = GameObject.Find(data[1]).GetComponent<HealthController>();
+                        Debug.Log("decre health " + data[1] + " " + Mathf.Max(0, enemyHealth.HealthCount - 20));
+                        if (enemyHealth != null)
+                        {
+                            
+                            enemyHealth.HealthCount = Mathf.Max(0, enemyHealth.HealthCount - 20);
+                            enemyHealth.CheckDeadOrAlive();
+                        }
+                        break;
+                    case "DESTROY":
+                        HealthController enemyDestroy = GameObject.Find(data[1]).GetComponent<HealthController>();
+
+                        if (enemyDestroy != null)
+                        {
+                            enemyDestroy.HealthCount = 0;
+                            enemyDestroy.CheckDeadOrAlive();
+                        }
+                        break;
+                }
+            }
+            guard = false;
+        }
+    }
+
+    // create player on scence when waiting
     public void CreatePlayerOnScence()
     {
-        Debug.Log("size " + ListPlayer.Count);
+        //Debug.Log("size " + ListPlayer.Count);
         foreach (Player player in ListPlayer)
         {
-            Debug.Log("find");
+            //Debug.Log("find");
             GameObject p = GameObject.Find(player.name);
 
             if (p == null)
             {
-                Debug.Log("create");
+                //Debug.Log("create");
                 p = GameObject.Instantiate(PlayersPrefabs[player.plane - 1], player.position, Quaternion.identity) as GameObject;
                 p.name = player.name;
+                Text playerName = p.GetComponentInChildren<Text>();
+                playerName.text = p.name;
                 GameObjectPlayer.Add(p);
             }
         }
     }
 
-    public void CreateEnemyOnScence()
+    
+    // spawn enemy if not spawned
+    public void UpdateEnemyOnScence()
     {
-        // to do
+        // if enemy has created so update health, else create enemy
+        while(QueueEnemy.Count > 0)
+        {
+            Enemy enemy = QueueEnemy.Dequeue();
+            GameObject enemyObject = GameObject.Find(enemy.id.ToString());
+            bool isIn = false;
+
+            if(enemyObject == null && isPlaying)
+            {
+                GameObject e = GameObject.Instantiate(EnemysPrefabs[enemy.plane - 1]) as GameObject;
+                e.transform.position = enemy.position;
+                e.name = enemy.id.ToString();
+            }
+        }
+    }
+    // call when enemy out of heal
+    public void Destroy(string id)
+    {
+        Debug.Log("DESTROY|" + id + "|" + getString("PlayerName"));
+        TcpSend("DESTROY|" + id + "|" + getString("PlayerName"));
     }
 
-    public void move(Vector3 position)
+    //call when enemy time out
+    public void DestroyTimeOut(string id)
+    {
+        TcpSend("DESTROY|" + id);
+        Debug.Log("DESTROY|" + id);
+    }
+
+    //call when item time out
+    public void DestroyItemTimeOut(string id)
+    {
+        TcpSend("DESTROYITEM|" + id);
+        Debug.Log("DESTROYITEM|" + id);
+    }
+
+    // call when enemy get shot
+    public void EnemyGetShot(string id)
+    {
+        TcpSend("SHOTED|" + id);
+        Debug.Log("SHOTED|" + id);
+    }
+
+    // call when player get shot
+    public void PlayerGetShot()
+    {
+        TcpSend("GETSHOTED|" + getString("PlayerName"));
+        Debug.Log("GETSHOTED|" + getString("PlayerName"));
+    }
+
+    // send item was picked by player
+    public void Item(string item, string id)
+    {
+        TcpSend("ITEM|" + item + "|" + id + "|" + getString("PlayerName"));
+        Debug.Log("ITEM|" + item + "|" + id + "|" + getString("PlayerName"));
+    }
+
+    // send ready
+    public void Ready()
+    {
+        isReady = true;
+        TcpSend("READY|" + getString("PlayerName"));
+    }
+
+    public void Shot()
+    {
+        TcpSend("SHOT|" + getString("PlayerName"));
+    }
+
+    //send move to server
+    public void Move(Vector3 position)
     {
         if (!IsPlaying())
             return;
@@ -319,19 +520,37 @@ public class Client : MonoBehaviour {
 
         TcpSend(move);
     }
-
-    public void Ready()
+    // update move of player
+    public void UpdateMove(GameObject player)
     {
-        isReady = true;
-        TcpSend("READY|" + getString("PlayerName"));
+        if (IsPlaying())
+        {
+            for (int i = 0; i < ListPlayer.Count; i++)
+            {
+                if (ListPlayer[i].enable && ListPlayer[i].name == player.name)
+                {
+                    player.transform.position = Vector3.MoveTowards(player.transform.position, ListPlayer[i].position, Time.deltaTime * 50.1f);
+                    HealthController playerHealth = player.GetComponent<HealthController>();
+                    playerHealth.HealthCount = ListPlayer[i].health;
+                    playerHealth.UpdateHealthProgress(playerHealth.HealthCount);
+                    playerHealth.CheckDeadOrAlive();
+                }
+                else if(!ListPlayer[i].enable && ListPlayer[i].name == player.name)
+                {
+                    player.SetActive(false);
+                }
+            }
+        }
     }
+
+    
 
     //call when recive START message
     public void OnStart()
     {
         isPlaying = true;
     }
-
+    
     public bool IsPlaying()
     {
         return isPlaying;
@@ -339,7 +558,10 @@ public class Client : MonoBehaviour {
 
     // Update is called once per frame
     void Update () {
-
+        // if playing update position
+        //UpdateMove();
+        handle();
+        UpdateEnemyOnScence();
     }
 
     [Serializable]
@@ -351,7 +573,7 @@ public class Client : MonoBehaviour {
         public int plane;
         public Vector3 position;
         public int health;
-        public int shield;
+        public bool shield;
         public int gun;
 
         public static Player CreateFromJSON(string jsonString)
@@ -363,15 +585,13 @@ public class Client : MonoBehaviour {
     [Serializable]
     public class Enemy
     {
-        public string id;
-        public bool enable;
+        public long id;
         public int plane;
         public Vector3 position;
-        public int health;
 
-        public static Player CreateFromJSON(string jsonString)
+        public static Enemy CreateFromJSON(string jsonString)
         {
-            return JsonUtility.FromJson<Player>(jsonString);
+            return JsonUtility.FromJson<Enemy>(jsonString);
         }
     }
 }

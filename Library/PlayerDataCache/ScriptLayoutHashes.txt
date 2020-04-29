@@ -2,7 +2,6 @@ WindowsStandalone
 PlayerPath?
 C:/Users/Hiddenpants-H/Desktop/test.exe
 SceneListBegin?
-Assets/Game/_Scenes/SpalshScreen.unity
 Assets/Game/_Scenes/MainMenu.unity
 Assets/Game/_Scenes/GamePlay.unity
 SceneListEnd?
@@ -266,6 +265,7 @@ cb67bd4e8bc0c6c0b72e4f5d671c73f4 Assembly-CSharp.dll:.UnityTween
 05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:.OnpointerDown
 42efceb38548d72ead3a011326ee7eb6 Assembly-CSharp.dll:.GunController
 53dbd7baa3c8da2f87828dd70d70dae4 Assembly-CSharp.dll:UnityStandardAssets.ImageEffects.DepthOfFieldDeprecated
+05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:.OnDestroyItem
 7fc3adfac7efbc0706567dbaca46f637 Assembly-CSharp.dll:UnityStandardAssets.ImageEffects.Fisheye
 05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:UnityStandardAssets.Utility.FPSCounter
 05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:UnityStandardAssets.ImageEffects.PostEffectsBase

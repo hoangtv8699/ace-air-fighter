@@ -45,7 +45,6 @@ public class PlayerController : MonoBehaviour
 		case PlayerStates.PlaneAlive:
 
 			PlaneAlive ();
-			gunInstance.FireBullets ();
 
 			Camera.main.fieldOfView = playerTransform.position.z.Remap (-5,150,77,86);
 			break;
@@ -53,71 +52,103 @@ public class PlayerController : MonoBehaviour
 
 	}
 
+    public void IncreaseGun()
+    {
+        SoundController.Static.playSoundFromName("Gun_Pickup");
+        if (gunScript.currentGunType == GunType.single)
+        {
+            gunScript.currentGunType = GunType.Dual;
+        }
+        else if (gunScript.currentGunType == GunType.Dual)
+        {
+            gunScript.currentGunType = GunType.triple;
+        }
+        else if (gunScript.currentGunType == GunType.triple)
+        {
+            gunScript.currentGunType = GunType.Quad;
+        }
+    }
+
 	float lastGunpickUptime = 0;
 	void OnTriggerEnter (Collider incoming)
 	{
-       // Debug.Log("player collided with "+ incoming.name);
+        // Debug.Log("player collided with "+ incoming.name);
+
+        if (this.name.Equals(client.getString("PlayerName"))) {
+            if (incoming.name.Contains("Pickup"))
+            {
+                //Debug.Log("pick up");
+                //  Debug.Log("PARTICLE PICKUP IS CREATED");
+                GameObject particleObj;
+                particleObj = GameController.Static.PlayerParticleEffects[0];
+                GameObject Obj = GameObject.Instantiate(particleObj, playerTransform.position, Quaternion.identity) as GameObject;
+
+                Destroy(Obj, 3);
+            }
 
 
-        if (incoming.name.Contains("PickUp"))
-        {
-          //  Debug.Log("PARTICLE PICKUP IS CREATED");
-               GameObject particleObj ;
-             particleObj = GameController.Static.PlayerParticleEffects[0];
-             GameObject Obj = GameObject.Instantiate(particleObj, playerTransform.position, Quaternion.identity) as GameObject;
-             
-             Destroy(Obj, 3);
+            if (incoming.name.Contains("HealthPickup"))
+            {
+                //send pick up item
+                string[] data = incoming.name.Split('|');
+                client.Item("HEALTH", data[1]);
+                //string[] data = incoming.name.Split('|');
+                //client.Item(data[0], data[1]);
+                //Destroy(incoming.gameObject);
+                //SoundController.Static.playSoundFromName("Health_Pickup");
+
+                //playerHealthScript.HealthCount += 10 * (1 + PlayerPrefs.GetInt("Health", 1));
+                //playerHealthScript.HealthCount = Mathf.Clamp(playerHealthScript.HealthCount, 0, 100);
+                //UpdateHealthProgress(playerHealthScript.HealthCount);
+
+            }
+            else if (incoming.name.Contains("ShiledPickup"))
+            {
+
+                //send pick up item
+                string[] data = incoming.name.Split('|');
+                client.Item("SHIELD", data[1]);
+                //Destroy(incoming.gameObject);
+                //SoundController.Static.playSoundFromName("Health_Pickup");
+                //playerHealthScript.CollisionNameCheck = "NONE";
+                //CancelInvoke("SwithOffShield");
+                //Invoke("SwithOffShield", 20 * (1 + PlayerPrefs.GetInt("Shield", 1)));
+                //shiledRenderObject.SetActive(true);
+            }
+            else if (incoming.name.Contains("CoinPickUp"))
+            {
+
+                //Destroy(incoming.gameObject);
+                //SoundController.Static.playSoundFromName("Pickup_Coin");
+                //Ace_ingameUiControl.Static.AddCurency(10);
+
+
+            }
+            else if (incoming.name.Contains("GunPickup") && Time.timeSinceLevelLoad - lastGunpickUptime > 3.0f)
+            {
+                //send pick up item
+                string[] data = incoming.name.Split('|');
+                client.Item("GUN", data[1]);
+                //lastGunpickUptime = Time.timeSinceLevelLoad;
+                //incoming.gameObject.SetActive(false);
+                //Destroy(incoming.gameObject);
+                //SoundController.Static.playSoundFromName("Gun_Pickup");
+                //if (gunScript.currentGunType == GunType.single)
+                //{
+                //    gunScript.currentGunType = GunType.Dual;
+                //}
+                //else if (gunScript.currentGunType == GunType.Dual)
+                //{
+                //    gunScript.currentGunType = GunType.triple;
+                //}
+                //else if (gunScript.currentGunType == GunType.triple)
+                //{
+                //    gunScript.currentGunType = GunType.Quad;
+                //}
+
+            }
         }
-
-
-		if (incoming.name.Contains ("HealthPickup")) {
-
-			Destroy (incoming.gameObject);
-			SoundController.Static.playSoundFromName("Health_Pickup");
-
-			playerHealthScript.HealthCount += 10 * (1 + PlayerPrefs.GetInt("Health",1));
-			playerHealthScript.HealthCount = Mathf.Clamp (playerHealthScript.HealthCount, 0, 100);
-			Ace_ingameUiControl.Static.UpdateHealthProgress (playerHealthScript.HealthCount);
-			 
-		} else if (incoming.name.Contains ("ShiledPickup")) {
-			
-			
-			Destroy (incoming.gameObject);
-			SoundController.Static.playSoundFromName("Health_Pickup");
-			playerHealthScript.CollisionNameCheck = "NONE";
-			CancelInvoke ("SwithOffShield");
-			Invoke ("SwithOffShield", 20 * ( 1 + PlayerPrefs.GetInt("Shield",1) ) );
-			shiledRenderObject.SetActive (true);
-		} else if (incoming.name.Contains ("CoinPickUp")) {
-		
-			Destroy (incoming.gameObject);
-			SoundController.Static.playSoundFromName("Pickup_Coin");
-			Ace_ingameUiControl.Static.AddCurency(10);
-           
-
-		}
-		else if (incoming.name.Contains ("GunPickup") && Time.timeSinceLevelLoad-lastGunpickUptime > 3.0f) {
-
-			lastGunpickUptime = Time.timeSinceLevelLoad;
-			incoming.gameObject.SetActive(false);
-			Destroy (incoming.gameObject);
-			SoundController.Static.playSoundFromName("Gun_Pickup");
-			if( gunScript.currentGunType ==  GunType.single )
-			{
-				gunScript.currentGunType = GunType.Dual;
-			}
-			else if( gunScript.currentGunType ==  GunType.Dual )
-			{
-				gunScript.currentGunType = GunType.triple;
-			}
-			else if( gunScript.currentGunType ==  GunType.triple )
-			{
-				gunScript.currentGunType = GunType.Quad;
-			}
-
-		}
-
-	}
+    }
 
 	void SwithOffShield()
 	{
@@ -125,7 +156,21 @@ public class PlayerController : MonoBehaviour
 		shiledRenderObject.SetActive (false);
 	}
 
-	void PlaneAlive ()
+    float currentFireTime;
+
+
+
+    public void Fire()
+    {
+        if (Time.timeSinceLevelLoad - currentFireTime > 0.5)
+        {
+            client.Shot();
+            currentFireTime = Time.timeSinceLevelLoad;
+
+        }
+    }
+
+    void PlaneAlive ()
 	{
         targetPosition = playerTransform.position;
 
@@ -146,21 +191,21 @@ public class PlayerController : MonoBehaviour
             targetPosition -= Vector3.right;
         }
 
-        //if (gameObject.name.Equals(client.getString("PlayerName")))
-        //{
-        //    playerTransform.position = Vector3.MoveTowards(playerTransform.position, targetPosition, Time.deltaTime * 50.1f);
-        //}
-
-        if (gameObject.name.Equals(client.getString("PlayerName")))
+        if (gameObject.name.Equals(client.getString("PlayerName")) && client.IsPlaying())
         {
             // send move
-            client.move(targetPosition);
+            client.Move(targetPosition);
+            if (Input.GetKey(KeyCode.Space))
+            {
+                Fire();
+            }
         }
+
+        client.UpdateMove(gameObject);
+
+        //gunInstance.FireBullets();
 
         playerTransform.rotation = Quaternion.Euler (0, 0, PlayerRotationCurve.Evaluate( Mathf.PingPong(Time.time,1) ));
 
-	}
-
-	 
-	 
+	}	 
 }

@@ -68,11 +68,11 @@ public class PlayerSelection : MonoBehaviour
 		limitBoundsForIndex ();
 
 		for (int i=0; i < infoTexts.Length; i++) {
-			infoTexts [i].text = AllPlayers [playerIndex].info [i];
+			infoTexts [i].text = AllPlayers [playerIndex - 1].info [i];
 		}
 
         selectButtonText.text = "Select";
-        AllPlayers [playerIndex].playerObject.SetActive (true);
+        AllPlayers [playerIndex - 1].playerObject.SetActive (true);
 		client.setInt ("PlayerIndex", playerIndex);
 	}
 	public void OnNext ()

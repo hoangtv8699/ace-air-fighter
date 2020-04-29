@@ -25,9 +25,17 @@ public class GunController : MonoBehaviour
 	public string poolObjectName = "_EnemyBulletPoolManager";
 	Color bulletColor;
 
-	void Start ()
+    private Client client;
+
+    private void OnEnable()
+    {
+        client = GameObject.FindGameObjectWithTag("client").GetComponent<Client>();
+    }
+
+    void Start ()
 	{
-		GameObject bulletPoolObject = GameObject.Find (poolObjectName);
+        
+        GameObject bulletPoolObject = GameObject.Find (poolObjectName);
 
 		BulletPool = bulletPoolObject.GetComponent<bulletPoolManager> ();
 
@@ -42,7 +50,7 @@ public class GunController : MonoBehaviour
 
 	Transform[] currentGunLocations;
 	// Update is called once per frame
-	float currentFireTime;
+	//float currentFireTime;
 
 
 
@@ -51,24 +59,30 @@ public class GunController : MonoBehaviour
 		ChangeBulletScriptSpeed ();
 
 
-		if (Time.timeSinceLevelLoad - currentFireTime > timeBetweenEachFiring) {
-			 
-			foreach (Transform t in currentGunLocations) {
+        //if (Time.timeSinceLevelLoad - currentFireTime > timeBetweenEachFiring) {
+        foreach (Transform t in currentGunLocations)
+        {
 
-				GameObject CreatedBullet = BulletPool.GetBulletObject ();
-				if (CreatedBullet == null)
-					return;
-				CreatedBullet.transform.position = t.position;
-				CreatedBullet.transform.rotation = t.rotation;
-				BulletController bulletScript = CreatedBullet.GetComponent<BulletController> ();
-				bulletScript.currentBulletState = BulletStates.movement;
-				bulletScript.Speed = bulletSpeed;
-				bulletScript.setColor (bulletColor);
+            GameObject CreatedBullet = BulletPool.GetBulletObject();
+            if (CreatedBullet == null)
+                return;
+            CreatedBullet.transform.position = t.position;
+            CreatedBullet.transform.rotation = t.rotation;
 
-				currentFireTime = Time.timeSinceLevelLoad;
-			
-			}
-		}
+            if (isPlayer)
+            {
+                CreatedBullet.name = this.name + CreatedBullet.name;
+            }
+            BulletController bulletScript = CreatedBullet.GetComponent<BulletController>();
+            bulletScript.currentBulletState = BulletStates.movement;
+            bulletScript.Speed = bulletSpeed;
+            bulletScript.setColor(bulletColor);
+
+
+            //currentFireTime = Time.timeSinceLevelLoad;
+
+        }
+		//}
 	}
 
 	float bulletSpeed;

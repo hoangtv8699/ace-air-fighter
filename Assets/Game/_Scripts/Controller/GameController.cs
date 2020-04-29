@@ -53,25 +53,23 @@ public class GameController : MonoBehaviour
 
     }
 
-	#if UNITY_EDITOR
+
 	void Update ()
 	{
-        
         if (!client.IsPlaying())
         {
             client.CreatePlayerOnScence();
         }
         else
         {
-            // synchronized player
+            // update enemy on scence
+            client.UpdateEnemyOnScence();
         }
         if (Input.GetKey (KeyCode.I)) {
 			PlayerPrefs.DeleteAll ();
 		}
 
 	}
-
-	#endif
 
 	void CreatePlayerOnScene ()
 	{
@@ -86,11 +84,12 @@ public class GameController : MonoBehaviour
 	public void OnGameStart ()
 	{
 
-		foreach (MonoBehaviour script in ScriptsToEnable) {
-			script.enabled = true;
-		}
+        //foreach (MonoBehaviour script in ScriptsToEnable)
+        //{
+        //    script.enabled = true;
+        //}
 
-	}
+    }
 
 	public void OnPlayerDead ()
 	{

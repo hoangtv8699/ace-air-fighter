@@ -277,7 +277,7 @@ public class AceButton   : MonoBehaviour ,IPointerDownHandler,IPointerUpHandler
 		case ButtonType.TargetActiveOnly:
 		case ButtonType.TargetActiveDeactiveParent:
 			
-			if (ObjectToActivate = null)
+			if (ObjectToActivate == null)
 				Debug.LogError (gameObject.name + " plz give reference to ObjectToActivate variable");
 			
 			break;
@@ -286,7 +286,7 @@ public class AceButton   : MonoBehaviour ,IPointerDownHandler,IPointerUpHandler
 		case ButtonType.ScriptActive:
 			
 		case ButtonType.ScriptDisable:
-			if (behaviour = null)
+			if (behaviour == null)
 				Debug.LogError (gameObject.name + " plz give reference to behaviour variable");
 			break;
 			

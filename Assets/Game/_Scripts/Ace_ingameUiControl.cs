@@ -34,38 +34,34 @@ public class Ace_ingameUiControl : MonoBehaviour
 	void Start ()
 	{
 		ChangeMenuState ();
-	 
-
-
-
 	}
 
-	public void AddCurency (int Curency)
-	{
-		CoinScore += Curency;
-		CurencyCountText.text = "" + CoinScore;
+	//public void AddCurency (int Curency)
+	//{
+	//	CoinScore += Curency;
+	//	CurencyCountText.text = "" + CoinScore;
 
-	}
+	//}
 
-	public void AddScore (int score)
-	{
-		playerScore += score;
+	//public void AddScore (int score)
+	//{
+	//	playerScore += score;
 
-		playerScoreCountText.text = "" + playerScore;
-		AddCurency (1);
-	}
+	//	playerScoreCountText.text = "" + playerScore;
+	//	AddCurency (1);
+	//}
 
-	float health;
+	//float health;
 
-	public	void UpdateHealthProgress (float healthValue)
-	{
-		HealthCountText.text = "" + Mathf.RoundToInt (healthValue);
+	//public	void UpdateHealthProgress (float healthValue)
+	//{
+	//	HealthCountText.text = "" + Mathf.RoundToInt (healthValue);
 		 
-		health = healthValue.Remap (0, startingHealth, 0, 100);
-		healthBarImage.fillAmount = Mathf.RoundToInt (health) * 0.01f;
+	//	health = healthValue.Remap (0, startingHealth, 0, 100);
+	//	healthBarImage.fillAmount = Mathf.RoundToInt (health) * 0.01f;
 	
 		 
-	}
+	//}
 
 
 	float lastClickTime;

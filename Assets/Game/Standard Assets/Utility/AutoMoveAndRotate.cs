@@ -9,10 +9,12 @@ namespace UnityStandardAssets.Utility
         public Vector3andSpace rotateDegreesPerSecond;
         public bool ignoreTimescale;
         private float m_LastRealTime;
+        
 
 
         private void Start()
         {
+            
             m_LastRealTime = Time.realtimeSinceStartup;
         }
 
