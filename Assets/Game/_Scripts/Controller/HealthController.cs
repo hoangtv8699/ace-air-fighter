@@ -101,15 +101,15 @@ public class  HealthController : MonoBehaviour
           
 			
 			if (isPlayer) {
-
-                if (this.name.Equals(client.getString("PlayerName")))
+                PlayerController playerController = gameObject.GetComponent<PlayerController>();
+                if (this.name.Equals(client.getString("PlayerName")) && !playerController.isShieldOn)
                 {
                     //Debug.Log("player get shot: " + this.name);
                     client.PlayerGetShot();
                     //HealthCount -= HealthDecrementCount;
                     Camera.main.GetComponent<CameraShake>().enabled = true;
                     Invoke("CameraShakeReset", 0.5f);
-                    UpdateHealthProgress(HealthCount);
+                    //UpdateHealthProgress(HealthCount);
                 }
                 
 

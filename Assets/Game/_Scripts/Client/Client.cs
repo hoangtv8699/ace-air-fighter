@@ -55,6 +55,20 @@ public class Client : MonoBehaviour {
         
     }
 
+    private int sortPlayerScore(Player x, Player y) {
+        return (int)(x.score - y.score);
+    }
+
+    public void updateScore(Text[] name, Text[] score)
+    {
+        ListPlayer.Sort(sortPlayerScore);
+        for(int i = 0; i < ListPlayer.Count; i++)
+        {
+            name[i].text = ListPlayer[i].name + " : ";
+            score[i].text = ListPlayer[i].score.ToString();
+        }
+    }
+
     public void setInt(string key, int value)
     {
         if (!PlayerData.ContainsKey(key))
@@ -369,10 +383,32 @@ public class Client : MonoBehaviour {
                         switch (data[1])
                         {
                             case "SHIELD":
-                                //todo
+                                GameObject playerShield = GameObject.Find(data[3]);
+
+                                if (playerShield != null)
+                                {
+                                    PlayerController playerscript = playerShield.GetComponent<PlayerController>();
+                                    playerscript.CancelInvoke("SwithOffShield");
+                                    playerscript.Invoke("SwithOffShield", 5);
+                                    playerscript.shiledRenderObject.SetActive(true);
+                                    playerscript.isShieldOn = true;
+                                }
+
+                                GameObject Shielditem = GameObject.Find("ShiledPickup" + "|" + data[2]);
+
+                                if (Shielditem != null)
+                                {
+                                    Destroy(Shielditem);
+                                }
+                                break;
                                 break;
                             case "HEALTH":
-                                //todo
+                                GameObject Healthitem = GameObject.Find("HealthPickup" + "|" + data[2]);
+
+                                if (Healthitem != null)
+                                {
+                                    Destroy(Healthitem);
+                                }
                                 break;
                             case "GUN":
                                 GameObject player = GameObject.Find(data[3]);

@@ -33,103 +33,103 @@ public class GameEnd : MonoBehaviour
 	void Start ()
 	{
 		 
-		PlayerPrefs.SetInt ("TotalCurrency", PlayerPrefs.GetInt ("TotalCurrency", 0) + Ace_ingameUiControl.Static.CoinScore);
+		//PlayerPrefs.SetInt ("TotalCurrency", PlayerPrefs.GetInt ("TotalCurrency", 0) + Ace_ingameUiControl.Static.CoinScore);
 
 		 
 
-		FinalScoreCount ();
+		//FinalScoreCount ();
 
-		BestScore ();
-		presentstate = scorecardstates.show_score;
-		buttonGroup.SetActive (false);
-		FinalCurrency ();
-		newSticker.SetActive (false);
+		//BestScore ();
+		//presentstate = scorecardstates.show_score;
+		//buttonGroup.SetActive (false);
+		//FinalCurrency ();
+		//newSticker.SetActive (false);
 
-		finalScore.text = " ";
-		ErnedCurrencyText.text = " ";
-		bestScore.text = " ";
+		//finalScore.text = " ";
+		//ErnedCurrencyText.text = " ";
+		//bestScore.text = " ";
 	}
 
 
-	void Update ()
-	{
+	//void Update ()
+	//{
 
-		switch (presentstate) {
+	//	switch (presentstate) {
 		
-		case scorecardstates.show_score:
-			valueForScore = Mathf.Lerp (valueForScore, toreachScore, 0.4f);
-			finalScore.text = "" + Mathf.RoundToInt (valueForScore);
-			if (Mathf.RoundToInt (valueForScore) == toreachScore) {
-				presentstate = scorecardstates.show_bestScore;
-			}
-			break;
-		case scorecardstates.show_bestScore:
-			ValueForBestScore = Mathf.Lerp (ValueForBestScore, toreachBestScore, 0.6f);
-			bestScore.text = "" + Mathf.RoundToInt (ValueForBestScore) + "  ";
-			if (Mathf.RoundToInt (ValueForBestScore) == toreachBestScore) {
-				presentstate = scorecardstates.show_currency;
-			}
-			break;
+	//	case scorecardstates.show_score:
+	//		valueForScore = Mathf.Lerp (valueForScore, toreachScore, 0.4f);
+	//		finalScore.text = "" + Mathf.RoundToInt (valueForScore);
+	//		if (Mathf.RoundToInt (valueForScore) == toreachScore) {
+	//			presentstate = scorecardstates.show_bestScore;
+	//		}
+	//		break;
+	//	case scorecardstates.show_bestScore:
+	//		ValueForBestScore = Mathf.Lerp (ValueForBestScore, toreachBestScore, 0.6f);
+	//		bestScore.text = "" + Mathf.RoundToInt (ValueForBestScore) + "  ";
+	//		if (Mathf.RoundToInt (ValueForBestScore) == toreachBestScore) {
+	//			presentstate = scorecardstates.show_currency;
+	//		}
+	//		break;
 		
-		case scorecardstates.show_currency:
-			valueFoeCurrency = Mathf.Lerp (valueFoeCurrency, toReachCurrency, 0.4f);
-			ErnedCurrencyText.text = "  " + Mathf.RoundToInt (valueFoeCurrency) + "  ";
-			if (Mathf.RoundToInt (valueFoeCurrency) == toReachCurrency) {
-				presentstate = scorecardstates.show_buttons;
-			}
-			break;
+	//	case scorecardstates.show_currency:
+	//		valueFoeCurrency = Mathf.Lerp (valueFoeCurrency, toReachCurrency, 0.4f);
+	//		ErnedCurrencyText.text = "  " + Mathf.RoundToInt (valueFoeCurrency) + "  ";
+	//		if (Mathf.RoundToInt (valueFoeCurrency) == toReachCurrency) {
+	//			presentstate = scorecardstates.show_buttons;
+	//		}
+	//		break;
 
 
 
-		case scorecardstates.show_buttons:
-			if (isAchivedNewBest)
-				newSticker.SetActive (true);
-			buttonGroup.SetActive (true);
-			if (showAds != null)
-				showAds (null, null); //you can register to this event ,to show ads
-			//SoundController.Static.StopBG();
-			presentstate = scorecardstates.None;
-			//ErnedCurrencyText.text="Erned Currency     :   " +(int)TargetScoreCount*100;
-			break;
-		}
+	//	case scorecardstates.show_buttons:
+	//		if (isAchivedNewBest)
+	//			newSticker.SetActive (true);
+	//		buttonGroup.SetActive (true);
+	//		if (showAds != null)
+	//			showAds (null, null); //you can register to this event ,to show ads
+	//		//SoundController.Static.StopBG();
+	//		presentstate = scorecardstates.None;
+	//		//ErnedCurrencyText.text="Erned Currency     :   " +(int)TargetScoreCount*100;
+	//		break;
+	//	}
 	
-	}
+	//}
 
-	void FinalScoreCount ()
-	{
-		TargetScoreCount = Ace_ingameUiControl.Static.playerScore;
-		toreachScore = TargetScoreCount;
+	//void FinalScoreCount ()
+	//{
+	//	TargetScoreCount = Ace_ingameUiControl.Static.playerScore;
+	//	toreachScore = TargetScoreCount;
 		 
 	
-	}
+	//}
 
 
-	void FinalCurrency ()
-	{
-		targetEarnedCurrency = Ace_ingameUiControl.Static.CoinScore;
-		toReachCurrency = targetEarnedCurrency;
+	//void FinalCurrency ()
+	//{
+	//	targetEarnedCurrency = Ace_ingameUiControl.Static.CoinScore;
+	//	toReachCurrency = targetEarnedCurrency;
 
-	}
+	//}
 
-	void ChangeScoreCount (int newScoreCount)
-	{
-		finalScore.text = "" + newScoreCount;
-	}
+	//void ChangeScoreCount (int newScoreCount)
+	//{
+	//	finalScore.text = "" + newScoreCount;
+	//}
 
-	bool isAchivedNewBest = false;
+	//bool isAchivedNewBest = false;
 
-	void BestScore ()
-	{
-		toreachBestScore = Mathf.RoundToInt (PlayerPrefs.GetInt ("BestScore", 0));
-		if (PlayerPrefs.GetInt ("BestScore", 0) < Ace_ingameUiControl.Static.playerScore) {
+	//void BestScore ()
+	//{
+	//	toreachBestScore = Mathf.RoundToInt (PlayerPrefs.GetInt ("BestScore", 0));
+	//	if (PlayerPrefs.GetInt ("BestScore", 0) < Ace_ingameUiControl.Static.playerScore) {
 
-			TargetBestScorCount = Ace_ingameUiControl.Static.playerScore;
-			toreachBestScore = TargetBestScorCount;
-			isAchivedNewBest = true;
-			PlayerPrefs.SetInt ("BestScore", Ace_ingameUiControl.Static.playerScore);
-		}
+	//		TargetBestScorCount = Ace_ingameUiControl.Static.playerScore;
+	//		toreachBestScore = TargetBestScorCount;
+	//		isAchivedNewBest = true;
+	//		PlayerPrefs.SetInt ("BestScore", Ace_ingameUiControl.Static.playerScore);
+	//	}
 	
-	}
+	//}
 
 	 
 

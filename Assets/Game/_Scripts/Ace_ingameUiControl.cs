@@ -8,63 +8,78 @@ public enum inGameMenuStates
 {
 	hud,
 	resume,
-	gameEnd}
-;
+	gameEnd
+};
 
 public class Ace_ingameUiControl : MonoBehaviour
 {
 
 
 	public GameObject hudMenu, resumeMenu, gameEndMenu;
-	public Text playerScoreCountText, HealthCountText, CurencyCountText;
-	public Image healthBarImage;
-	public inGameMenuStates currentMenuState;
+    public Text[] namePlayer;
+    public Text[] score;
+    //public Text playerScoreCountText, HealthCountText, CurencyCountText;
+    //public Image healthBarImage;
+    public inGameMenuStates currentMenuState;
 	
 	public static Ace_ingameUiControl Static;
-	public int playerScore;
-	public int CoinScore;
-	public float startingHealth;
+    //public int playerScore;
+    //public int CoinScore;
+    //public float startingHealth;
+
+    private Client client;
 
 	void OnEnable ()
 	{
 		Static = this;
 		AceButton.buttonDown += OnbuttonClick;
-	}
+        client = GameObject.FindGameObjectWithTag("client").GetComponent<Client>();
+    }
 
 	void Start ()
 	{
 		ChangeMenuState ();
 	}
 
-	//public void AddCurency (int Curency)
-	//{
-	//	CoinScore += Curency;
-	//	CurencyCountText.text = "" + CoinScore;
+    private void UpdateScore()
+    {
+        client.updateScore(namePlayer, score);
+    }
 
-	//}
+    private void Update()
+    {
+        UpdateScore();
+    }
 
-	//public void AddScore (int score)
-	//{
-	//	playerScore += score;
+    //public void AddCurency (int Curency)
+    //{
+    //	CoinScore += Curency;
+    //	CurencyCountText.text = "" + CoinScore;
 
-	//	playerScoreCountText.text = "" + playerScore;
-	//	AddCurency (1);
-	//}
+    //}
 
-	//float health;
+    //public void AddScore (int score)
+    //{
+    //	playerScore += score;
 
-	//public	void UpdateHealthProgress (float healthValue)
-	//{
-	//	HealthCountText.text = "" + Mathf.RoundToInt (healthValue);
-		 
-	//	health = healthValue.Remap (0, startingHealth, 0, 100);
-	//	healthBarImage.fillAmount = Mathf.RoundToInt (health) * 0.01f;
-	
-		 
-	//}
+    //	playerScoreCountText.text = "" + playerScore;
+    //	AddCurency (1);
+    //}
+
+    //float health;
+
+    //public	void UpdateHealthProgress (float healthValue)
+    //{
+    //	HealthCountText.text = "" + Mathf.RoundToInt (healthValue);
+
+    //	health = healthValue.Remap (0, startingHealth, 0, 100);
+    //	healthBarImage.fillAmount = Mathf.RoundToInt (health) * 0.01f;
 
 
-	float lastClickTime;
+    //}
+
+
+    float lastClickTime;
 
 	public	void OnbuttonClick (System.Object buttonname, EventArgs args)
 	{

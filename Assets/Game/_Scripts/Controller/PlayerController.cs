@@ -14,6 +14,7 @@ public class PlayerController : MonoBehaviour
 	public float
 		planeMovementSpeed = 1.0f;
 	public GameObject shiledRenderObject;
+    public bool isShieldOn;
 
     private Client client;
 	public enum PlayerStates
@@ -33,6 +34,7 @@ public class PlayerController : MonoBehaviour
 	 public static GunController gunScript;
 	void OnEnable ()
 	{
+        isShieldOn = false;
         client = GameObject.FindGameObjectWithTag("client").GetComponent<Client>();
         playerHealthScript = GetComponent<HealthController> ();
 		gunScript = GetComponent<GunController> ();
@@ -154,6 +156,7 @@ public class PlayerController : MonoBehaviour
 	{
 		playerHealthScript.CollisionNameCheck ="EnemyBullet";
 		shiledRenderObject.SetActive (false);
+        isShieldOn = false;
 	}
 
     float currentFireTime;
