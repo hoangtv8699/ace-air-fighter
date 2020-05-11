@@ -15,7 +15,7 @@ public class Ace_ingameUiControl : MonoBehaviour
 {
 
 
-	public GameObject hudMenu, resumeMenu, gameEndMenu;
+	public GameObject hudMenu, resumeMenu, gameEndMenu, tutorial;
     public Text[] namePlayer;
     public Text[] score;
     //public Text playerScoreCountText, HealthCountText, CurencyCountText;
@@ -32,13 +32,13 @@ public class Ace_ingameUiControl : MonoBehaviour
 	void OnEnable ()
 	{
 		Static = this;
-		AceButton.buttonDown += OnbuttonClick;
+		//AceButton.buttonDown += OnbuttonClick;
         client = GameObject.FindGameObjectWithTag("client").GetComponent<Client>();
     }
 
 	void Start ()
 	{
-		ChangeMenuState ();
+		//ChangeMenuState ();
 	}
 
     private void UpdateScore()
@@ -78,84 +78,129 @@ public class Ace_ingameUiControl : MonoBehaviour
 
     //}
 
+    public void Pause()
+    {
+        if (!resumeMenu.activeSelf)
+        {
+            SoundController.Static.bgSound.gameObject.SetActive(false);
+            SoundController.Static.firingBullets.enabled = false;
+            SoundController.Static.PropellerEngine.Stop();
 
-    float lastClickTime;
+            if (resumeMenu != null)
+            {
+                resumeMenu.SetActive(true);
+            }
+        }
+        else
+        {
+            SoundController.Static.firingBullets.enabled = true;
+            SoundController.Static.bgSound.gameObject.SetActive(true);
+            SoundController.Static.PropellerEngine.Play();
 
-	public	void OnbuttonClick (System.Object buttonname, EventArgs args)
-	{
+            if (resumeMenu != null)
+            {
+                resumeMenu.SetActive(false);
+            }
+        }
+
+        if (!client.IsPlaying())
+        {
+            
+            if (!tutorial.activeSelf)
+            {
+                tutorial.SetActive(true);
+            }else
+            {
+                tutorial.SetActive(false);
+            }
+        }
+    }
+
+    public void MainMenu()
+    {
+        client.CloseThread();
+        client.QuitRoom();
+        SceneManager.LoadScene("MainMenu");
+    }
+
+
+ //   float lastClickTime;
+
+	//public	void OnbuttonClick (System.Object buttonname, EventArgs args)
+	//{
 		 
-		Debug.Log ("clicked button " + buttonname.ToString ());
-		switch (buttonname.ToString ()) {
-		case "Pause":
-			Debug.Log ("PAUSED");
-			currentMenuState = inGameMenuStates.resume;
-			SoundController.Static.bgSound.gameObject.SetActive (false);
-			SoundController.Static.firingBullets.enabled = false;
-			SoundController.Static.PropellerEngine.Stop ();
-			Time.timeScale = 0;
-			ChangeMenuState ();
-			break;
-		case "Resume":
-			SoundController.Static.firingBullets.enabled = true;
-			SoundController.Static.bgSound.gameObject.SetActive (true);
-			SoundController.Static.PropellerEngine.Play ();
-			currentMenuState = inGameMenuStates.hud;
-			Time.timeScale = 1;
-			ChangeMenuState ();
-			break;
+	//	Debug.Log ("clicked button " + buttonname.ToString ());
+	//	switch (buttonname.ToString ()) {
+	//	case "Pause":
+	//		Debug.Log ("PAUSED");
+	//		currentMenuState = inGameMenuStates.resume;
+ //           SoundController.Static.bgSound.gameObject.SetActive(false);
+ //           SoundController.Static.firingBullets.enabled = false;
+ //           SoundController.Static.PropellerEngine.Stop();
+ //           Time.timeScale = 0;
+	//		ChangeMenuState ();
+	//		break;
+	//	case "Resume":
+	//		SoundController.Static.firingBullets.enabled = true;
+	//		SoundController.Static.bgSound.gameObject.SetActive (true);
+	//		SoundController.Static.PropellerEngine.Play ();
+	//		currentMenuState = inGameMenuStates.hud;
+	//		Time.timeScale = 1;
+	//		ChangeMenuState ();
+	//		break;
 
-		case "Restart":
+	//	case "Restart":
 
-			currentMenuState = inGameMenuStates.gameEnd;
-			break;
+	//		currentMenuState = inGameMenuStates.gameEnd;
+	//		break;
 
-		case "PlayAgain":
+	//	case "PlayAgain":
 
-			SceneManager.LoadScene (2);
+	//		SceneManager.LoadScene (2);
 			 
-			break;
+	//		break;
 
-		case "Mainmenu":
-			SceneManager.LoadScene (0);
-			break;
+	//	case "Mainmenu":
+	//		SceneManager.LoadScene (0);
+	//		break;
 			
-		}
+	//	}
 
 
-	}
+	//}
 
-	public GameEnd gameEndInstance;
+	//public GameEnd gameEndInstance;
 
-	public void ChangeMenuState ()
-	{
-		switch (currentMenuState) {
-		case inGameMenuStates.hud:
-			hudMenu.SetActive (true);
-			resumeMenu.SetActive (false);
-			gameEndMenu.SetActive (false);
+	//public void ChangeMenuState ()
+	//{
+	//	switch (currentMenuState) {
+	//	case inGameMenuStates.hud:
+	//		hudMenu.SetActive (true);
+	//		resumeMenu.SetActive (false);
+	//		gameEndMenu.SetActive (false);
 
-			break;
-		case inGameMenuStates.resume:
+	//		break;
+	//	case inGameMenuStates.resume:
 
-			if (resumeMenu != null) {
-				resumeMenu.SetActive (true);
-			}
-			if (hudMenu != null) {
-				hudMenu.SetActive (false);
-			}
-			break;
-		case inGameMenuStates.gameEnd:
+	//		if (resumeMenu != null) {
+	//			resumeMenu.SetActive (true);
+	//		}
+	//		if (hudMenu != null) {
+	//			hudMenu.SetActive (false);
+	//		}
+	//		break;
+	//	case inGameMenuStates.gameEnd:
 
 			 
-			gameEndMenu.SetActive (true);
-			hudMenu.SetActive (false);
-			resumeMenu.SetActive (false);
+	//		gameEndMenu.SetActive (true);
+	//		hudMenu.SetActive (false);
+	//		resumeMenu.SetActive (false);
 
-			break;
-		}
+	//		break;
+	//	}
 	
 
-	}
+	//}
 
 
  

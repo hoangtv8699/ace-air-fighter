@@ -241,12 +241,12 @@
     <Compile Include="Assets\Game\_Scripts\Controller\AceHelper.cs" />
     <Compile Include="Assets\Game\_Scripts\Controller\BulletController.cs" />
     <Compile Include="Assets\Game\_Scripts\Controller\CameraController.cs" />
+    <Compile Include="Assets\Game\_Scripts\Controller\DestroyTimeOut.cs" />
     <Compile Include="Assets\Game\_Scripts\Controller\EnemyController.cs" />
     <Compile Include="Assets\Game\_Scripts\Controller\GameController.cs" />
     <Compile Include="Assets\Game\_Scripts\Controller\GameStarter.cs" />
     <Compile Include="Assets\Game\_Scripts\Controller\GunController.cs" />
     <Compile Include="Assets\Game\_Scripts\Controller\HealthController.cs" />
-    <Compile Include="Assets\Game\_Scripts\Controller\OnDestroyItem.cs" />
     <Compile Include="Assets\Game\_Scripts\Controller\pathTraveller.cs" />
     <Compile Include="Assets\Game\_Scripts\Controller\PlayerController.cs" />
     <Compile Include="Assets\Game\_Scripts\cubeController.cs" />

@@ -39,6 +39,9 @@ public class CheckName : MonoBehaviour {
     
 
 	void Update () {
-		
+        if(client.getString("PlayerName") != null)
+        {
+            activeAndDeactive();
+        }
 	}
 }

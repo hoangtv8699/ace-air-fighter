@@ -104,6 +104,12 @@ public class Client : MonoBehaviour {
         return (string)PlayerData[key];
     }
 
+    public void remove(object key)
+    {
+        PlayerData.Remove(key);
+    }
+
+
     public bool TcpConnectToServer(string host, int port)
     {
         if (TcpReady)
@@ -151,6 +157,11 @@ public class Client : MonoBehaviour {
     private void OnDisable()
     {
         CloseSocket();
+    }
+
+    public void CloseThread()
+    {
+        ReadThread.Abort();
     }
 
     public void CloseSocket()
@@ -492,6 +503,15 @@ public class Client : MonoBehaviour {
             }
         }
     }
+
+    // call when enemy out of heal
+    public void QuitRoom()
+    {
+        isPlaying = false;
+        Debug.Log("QUITROOM|" + getString("PlayerName"));
+        TcpSend("QUITROOM|" + getString("PlayerName"));
+    }
+
     // call when enemy out of heal
     public void Destroy(string id)
     {

@@ -43,6 +43,7 @@ public class PlayerSelection : MonoBehaviour
     {
         Debug.Log("Log out");
         client.TcpSend("QUIT|" + client.getString("PlayerName"));
+        client.remove("PlayerName");
         Debug.Log("gameobject : " + this.name);
         Debug.Log("activate: " + Menu.name);
         Debug.Log("activate: " + PlayerMesh.name);

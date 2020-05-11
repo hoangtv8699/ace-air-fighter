@@ -15,10 +15,6 @@ public class Loading : MonoBehaviour {
 
 
  	void loadLevel(){
-
-
-		 	Application.LoadLevelAsync(Application.loadedLevel + 1);
-			
-
+		 Application.LoadLevelAsync("GamePlay");
 	}
 }
