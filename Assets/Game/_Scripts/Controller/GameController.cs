@@ -64,6 +64,7 @@ public class GameController : MonoBehaviour
         {
             // update enemy on scence
             client.UpdateEnemyOnScence();
+           
         }
         if (Input.GetKey (KeyCode.I)) {
 			PlayerPrefs.DeleteAll ();
@@ -91,16 +92,16 @@ public class GameController : MonoBehaviour
 
     }
 
-	public void OnPlayerDead ()
-	{
-		SoundController.Static.firingBullets.Stop ();
-		SoundController.Static.PropellerEngine.Stop ();
-		Invoke ("OnGameEnd", 2);
+	//public void OnPlayerDead ()
+	//{
+	//	SoundController.Static.firingBullets.Stop ();
+	//	SoundController.Static.PropellerEngine.Stop ();
+	//	Invoke ("OnGameEnd", 2);
 		
-	}
+	//}
 
-	void OnGameEnd ()
-	{
+	//void OnGameEnd ()
+	//{
 
 		//SoundController.Static.bgSound.enabled = false;
 
@@ -111,7 +112,7 @@ public class GameController : MonoBehaviour
 
 		//Ace_ingameUiControl.Static.currentMenuState = inGameMenuStates.gameEnd;
 		//Ace_ingameUiControl.Static.ChangeMenuState ();
-	}
+	//}
 
    
 

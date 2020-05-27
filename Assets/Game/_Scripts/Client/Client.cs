@@ -7,11 +7,14 @@ using System;
 using System.Text;
 using System.Threading;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class Client : MonoBehaviour {
 
     public GameObject[] PlayersPrefabs;
     public GameObject[] EnemysPrefabs;
+    public GameObject Notification;
+    public GameObject CantConnect;
 
     private string clientName;
     private int TcpPortToConnect = 3308;
@@ -48,6 +51,7 @@ public class Client : MonoBehaviour {
         GameObjectPlayer = new List<GameObject>();
         //GameObjectEnemy = new List<GameObject>();
         DataReaded = new Queue<string>();
+        ReadThread = new Thread(ReadData);
     }
     // Use this for initialization
     void Start () {
@@ -110,7 +114,7 @@ public class Client : MonoBehaviour {
     }
 
 
-    public bool TcpConnectToServer(string host, int port)
+    private bool TcpConnectToServer(string host, int port)
     {
         if (TcpReady)
             return true;
@@ -121,15 +125,38 @@ public class Client : MonoBehaviour {
             TcpStream = TcpSocket.GetStream();
             TcpWriter = new StreamWriter(TcpStream);
             TcpReader = new StreamReader(TcpStream);
-
             TcpReady = true;
         }
         catch (Exception e)
         {
+            CantConnect.SetActive(true);
             Debug.Log("Socket error " + e.Message);
         }
 
         return TcpReady;
+    }
+
+    public void TcpConnectToServer()
+    {
+        CantConnect.SetActive(false);
+        if (TcpReady)
+            return ;
+
+        try
+        {
+            TcpSocket = new TcpClient(hostToConnect, TcpPortToConnect);
+            TcpStream = TcpSocket.GetStream();
+            TcpWriter = new StreamWriter(TcpStream);
+            TcpReader = new StreamReader(TcpStream);
+            TcpReady = true;
+        }
+        catch (Exception e)
+        {
+            CantConnect.SetActive(true);
+            Debug.Log("Socket error " + e.Message);
+        }
+
+        //return TcpReady;
     }
 
     public bool TcpSend(string data)
@@ -176,11 +203,17 @@ public class Client : MonoBehaviour {
             {
                 TcpSend("QUIT|" + getString("PlayerName"));
             }
+            Debug.Log("quit game");
+            if (ReadThread.IsAlive)
+            {
+                ReadThread.Abort();
+            }
+            
             TcpWriter.Close();
             TcpReader.Close();
             TcpSocket.Close();
             TcpReady = false;
-            ReadThread.Abort();
+            
         }
     }
     // login execute
@@ -220,8 +253,19 @@ public class Client : MonoBehaviour {
             setRoomAndLevel(data);
             return true;
         }
+        else if(data[0].Equals("LOGIN") && int.Parse(data[1]) == 0)
+        {
+            Text text = Notification.GetComponentInChildren<Text>();
+            text.text = "Login fail, try another name";
+            Notification.SetActive(true);
+        }
 
         return false;
+    }
+
+    public void closeNotification()
+    {
+        Notification.SetActive(false);
     }
     // set room and level
     private void setRoomAndLevel(string[] data)
@@ -256,9 +300,14 @@ public class Client : MonoBehaviour {
             temp = true;
 
             // create a new thread to handle read data
-            ReadThread = new Thread(ReadData);
+            
             ReadThread.Start();
 
+        }else if (data[0].Equals("JOIN_ROOM") && int.Parse(data[1]) == 0)
+        {
+            Text text = Notification.GetComponentInChildren<Text>();
+            text.text = "Room full, try another";
+            Notification.SetActive(true);
         }
         return temp;
     }
@@ -303,7 +352,7 @@ public class Client : MonoBehaviour {
                                     else
                                     {
                                         //else add if not in
-                                        Debug.Log("not playing: " + ListPlayer.Count);
+                                        //Debug.Log("not playing: " + ListPlayer.Count);
                                         bool isIn = false;
                                         for (int j = 0; j < ListPlayer.Count; j++)
                                         {
@@ -457,6 +506,13 @@ public class Client : MonoBehaviour {
                             enemyDestroy.CheckDeadOrAlive();
                         }
                         break;
+                    case "QUITROOM":
+                        CloseThread();
+                        if (data[1].Equals(getString("PlayerName")))
+                        {
+                            SceneManager.LoadScene("MainMenu");
+                        }
+                        break;
                 }
             }
             guard = false;
@@ -596,6 +652,32 @@ public class Client : MonoBehaviour {
                     player.SetActive(false);
                 }
             }
+        }
+    }
+
+    public bool checkEndGame()
+    {
+        int endGame = 0;
+        if (IsPlaying())
+        {
+            for (int i = 0; i < ListPlayer.Count; i++)
+            {
+                if (ListPlayer[i].health == 0)
+                {
+                    endGame++;
+                }
+               
+            }
+
+        }
+        Debug.Log(endGame);
+        if(endGame == 3)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
         }
     }
 

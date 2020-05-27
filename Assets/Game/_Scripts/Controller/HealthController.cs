@@ -183,7 +183,7 @@ public class  HealthController : MonoBehaviour
 			Destroy (gameObject, 15);
 
 			if (this.tag.Contains ("Player")) {
-				GameController.Static.OnPlayerDead ();
+				//GameController.Static.OnPlayerDead ();
 				SoundController.Static.playSoundFromName ("Blast");
 				CameraShake shakeInstance = Camera.main.GetComponent<CameraShake> ();
 				shakeInstance.enabled = true;
