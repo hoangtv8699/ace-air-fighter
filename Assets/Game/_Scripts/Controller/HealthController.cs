@@ -65,7 +65,7 @@ public class  HealthController : MonoBehaviour
     {
         //float health = healthValue.Remap(0, HealthCount, 0, 100);
         healthBar.fillAmount = Mathf.RoundToInt(healthValue) * 0.01f;
-        Debug.Log("health " + healthValue);
+        //Debug.Log("health " + healthValue);
     }
 
     float lastParticleTime;

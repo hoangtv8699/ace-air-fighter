@@ -31,10 +31,6 @@ public class PlayerSelection : MonoBehaviour
     void OnEnable ()
 	{
         client = GameObject.FindGameObjectWithTag("client").GetComponent<Client>();
-        if (client != null)
-        {
-            Debug.Log("not null");
-        }
         playerIndex = 1;
 		UpdateInfo ();	
 	}

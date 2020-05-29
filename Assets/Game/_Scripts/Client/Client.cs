@@ -291,16 +291,16 @@ public class Client : MonoBehaviour {
         //Debug.Log("JOIN_ROOM|" + name + "|" + (LevelSelect * NumberOfRoom + RoomIndex) + "|" + getInt("PlayerIndex"));
 
         TcpSend("JOIN_ROOM|" + name + "|" + (LevelSelect * NumberOfRoom + RoomIndex) + "|" + getInt("PlayerIndex"));
-        data = TcpRead().Split('|');
+        string tmp = TcpRead();
+        data = tmp.Split('|');
 
-        //Debug.Log(data[0] + data[1]);
+        Debug.Log(tmp);
 
         if (data[0].Equals("JOIN_ROOM") && int.Parse(data[1]) == 1)
         {
             temp = true;
 
             // create a new thread to handle read data
-            
             ReadThread.Start();
 
         }else if (data[0].Equals("JOIN_ROOM") && int.Parse(data[1]) == 0)
@@ -319,8 +319,8 @@ public class Client : MonoBehaviour {
             while (true)
             {
                 string data = TcpRead();
-                //Debug.Log(data);
-
+                Debug.Log(data);
+                //if (data == null) continue;
                 string[] splited = data.Split('|');
 
                 switch (splited[0])
@@ -415,6 +415,7 @@ public class Client : MonoBehaviour {
             }
         }catch(Exception e)
         {
+
             Debug.Log(e);
         }
 
@@ -506,13 +507,14 @@ public class Client : MonoBehaviour {
                             enemyDestroy.CheckDeadOrAlive();
                         }
                         break;
-                    case "QUITROOM":
-                        CloseThread();
-                        if (data[1].Equals(getString("PlayerName")))
-                        {
-                            SceneManager.LoadScene("MainMenu");
-                        }
-                        break;
+                    //case "QUITROOM":
+                        
+                    //    if (data[1].Equals(getString("PlayerName")))
+                    //    {
+                    //        CloseThread();
+                    //        SceneManager.LoadScene("MainMenu");
+                    //    }
+                    //    break;
                 }
             }
             guard = false;
@@ -670,7 +672,7 @@ public class Client : MonoBehaviour {
             }
 
         }
-        Debug.Log(endGame);
+        //Debug.Log(endGame);
         if(endGame == 3)
         {
             return true;
