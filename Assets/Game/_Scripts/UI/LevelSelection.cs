@@ -26,10 +26,10 @@ public class LevelSelection : MonoBehaviour {
 
     public void OnBack()
     {
-        Debug.Log("gameobject : " + this.name);
-        Debug.Log("de activate: " + gameObject.name);
-        Debug.Log("activate: " + PlayerMesh.name);
-        Debug.Log("activate: " + PlayerSelection.name);
+        //Debug.Log("gameobject : " + this.name);
+        //Debug.Log("de activate: " + gameObject.name);
+        //Debug.Log("activate: " + PlayerMesh.name);
+        //Debug.Log("activate: " + PlayerSelection.name);
         gameObject.SetActive(false);
         PlayerMesh.SetActive(true);
         PlayerSelection.SetActive(true);
@@ -38,9 +38,9 @@ public class LevelSelection : MonoBehaviour {
     public void OnselectPress()
     {
         client.setInt("LevelSelect", LevelIndex);
-        Debug.Log("gameobject : " + this.name);
-        Debug.Log("activate: " + RoomSelection.name);
-        Debug.Log("de activate: " + gameObject.name);
+        //Debug.Log("gameobject : " + this.name);
+        //Debug.Log("activate: " + RoomSelection.name);
+        //Debug.Log("de activate: " + gameObject.name);
         RoomSelection.SetActive(true);
         gameObject.SetActive(false);
         

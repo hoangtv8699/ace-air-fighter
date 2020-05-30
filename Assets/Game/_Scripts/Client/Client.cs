@@ -13,8 +13,9 @@ public class Client : MonoBehaviour {
 
     public GameObject[] PlayersPrefabs;
     public GameObject[] EnemysPrefabs;
-    public GameObject Notification;
-    public GameObject CantConnect;
+
+    private GameObject Notification;
+    private GameObject CantConnect;
 
     private string clientName;
     private int TcpPortToConnect = 3308;
@@ -34,6 +35,7 @@ public class Client : MonoBehaviour {
     //private List<GameObject> GameObjectEnemy;
     private Queue<string> DataReaded;
     private Thread ReadThread;
+    private bool flags;
 
 
     private void OnEnable()
@@ -52,6 +54,8 @@ public class Client : MonoBehaviour {
         //GameObjectEnemy = new List<GameObject>();
         DataReaded = new Queue<string>();
         ReadThread = new Thread(ReadData);
+        flags = true;
+        
     }
     // Use this for initialization
     void Start () {
@@ -129,6 +133,8 @@ public class Client : MonoBehaviour {
         }
         catch (Exception e)
         {
+            
+            CantConnect = GameObject.Find("MainMenu_UI").transform.Find("CantConnect").gameObject;
             CantConnect.SetActive(true);
             Debug.Log("Socket error " + e.Message);
         }
@@ -138,10 +144,8 @@ public class Client : MonoBehaviour {
 
     public void TcpConnectToServer()
     {
+        CantConnect = GameObject.Find("MainMenu_UI").transform.Find("CantConnect").gameObject;
         CantConnect.SetActive(false);
-        if (TcpReady)
-            return ;
-
         try
         {
             TcpSocket = new TcpClient(hostToConnect, TcpPortToConnect);
@@ -189,6 +193,7 @@ public class Client : MonoBehaviour {
     public void CloseThread()
     {
         ReadThread.Abort();
+
     }
 
     public void CloseSocket()
@@ -233,11 +238,8 @@ public class Client : MonoBehaviour {
         }
 
         data = TcpRead();
+        //Debug.Log(data);
 
-        //TcpReady = false;
-        //TcpConnectToServer(hostToConnect, TcpPortToConnect);
-
-        //Debug.Log("test data: " + data);
         if (data != null && check(data.Split('|')))
         {
             setString("PlayerName", name);
@@ -248,13 +250,14 @@ public class Client : MonoBehaviour {
        
     private bool check(string[] data)
     {
-        if (data[0].Equals("LOGIN") && int.Parse(data[1]) == 1)
+        if (data[0].Contains("OGIN") && int.Parse(data[1]) == 1)
         {
             setRoomAndLevel(data);
             return true;
         }
-        else if(data[0].Equals("LOGIN") && int.Parse(data[1]) == 0)
+        else if(data[0].Contains("OGIN") && int.Parse(data[1]) == 0)
         {
+            Notification = GameObject.Find("MainMenu_UI").transform.Find("Notification").gameObject;
             Text text = Notification.GetComponentInChildren<Text>();
             text.text = "Login fail, try another name";
             Notification.SetActive(true);
@@ -265,6 +268,7 @@ public class Client : MonoBehaviour {
 
     public void closeNotification()
     {
+        Notification = GameObject.Find("MainMenu_UI").transform.Find("Notification").gameObject;
         Notification.SetActive(false);
     }
     // set room and level
@@ -289,22 +293,24 @@ public class Client : MonoBehaviour {
         int NumberOfRoom = getInt("Level" + LevelSelect);
 
         //Debug.Log("JOIN_ROOM|" + name + "|" + (LevelSelect * NumberOfRoom + RoomIndex) + "|" + getInt("PlayerIndex"));
-
+        TcpReader.DiscardBufferedData();
         TcpSend("JOIN_ROOM|" + name + "|" + (LevelSelect * NumberOfRoom + RoomIndex) + "|" + getInt("PlayerIndex"));
         string tmp = TcpRead();
         data = tmp.Split('|');
 
         Debug.Log(tmp);
 
-        if (data[0].Equals("JOIN_ROOM") && int.Parse(data[1]) == 1)
+        if (data[0].Contains("OIN_ROOM") && int.Parse(data[1]) == 1)
         {
             temp = true;
 
             // create a new thread to handle read data
+            ReadThread = new Thread(ReadData);
             ReadThread.Start();
 
-        }else if (data[0].Equals("JOIN_ROOM") && int.Parse(data[1]) == 0)
+        }else if (data[0].Contains("OIN_ROOM") && int.Parse(data[1]) == 0)
         {
+            Notification = GameObject.Find("MainMenu_UI").transform.Find("Notification").gameObject;
             Text text = Notification.GetComponentInChildren<Text>();
             text.text = "Room full, try another";
             Notification.SetActive(true);
@@ -413,10 +419,9 @@ public class Client : MonoBehaviour {
                 }
 
             }
-        }catch(Exception e)
-        {
-
-            Debug.Log(e);
+        }catch(ThreadAbortException){
+            return;
+         
         }
 
     }
@@ -507,14 +512,10 @@ public class Client : MonoBehaviour {
                             enemyDestroy.CheckDeadOrAlive();
                         }
                         break;
-                    //case "QUITROOM":
-                        
-                    //    if (data[1].Equals(getString("PlayerName")))
-                    //    {
-                    //        CloseThread();
-                    //        SceneManager.LoadScene("MainMenu");
-                    //    }
-                    //    break;
+                    case "JOINROOM":
+
+
+                        break;
                 }
             }
             guard = false;

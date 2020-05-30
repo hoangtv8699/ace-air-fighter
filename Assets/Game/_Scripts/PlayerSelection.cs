@@ -37,13 +37,13 @@ public class PlayerSelection : MonoBehaviour
 
     public void OnBack()
     {
-        Debug.Log("Log out");
+        //Debug.Log("Log out");
         client.TcpSend("QUIT|" + client.getString("PlayerName"));
         client.remove("PlayerName");
-        Debug.Log("gameobject : " + this.name);
-        Debug.Log("activate: " + Menu.name);
-        Debug.Log("activate: " + PlayerMesh.name);
-        Debug.Log("de activate: " + gameObject.name);
+        //Debug.Log("gameobject : " + this.name);
+        //Debug.Log("activate: " + Menu.name);
+        //Debug.Log("activate: " + PlayerMesh.name);
+        //Debug.Log("de activate: " + gameObject.name);
         Menu.SetActive(true);
         PlayerMesh.SetActive(false);
         gameObject.SetActive(false);
@@ -51,10 +51,10 @@ public class PlayerSelection : MonoBehaviour
 
 	public void OnselectPress ()
 	{
-        Debug.Log("gameobject : " + this.name);
-        Debug.Log("activate: " + LevelSelection.name);
-        Debug.Log("de activate: " + PlayerMesh.name);
-        Debug.Log("de activate: " + gameObject.name);
+        //Debug.Log("gameobject : " + this.name);
+        //Debug.Log("activate: " + LevelSelection.name);
+        //Debug.Log("de activate: " + PlayerMesh.name);
+        //Debug.Log("de activate: " + gameObject.name);
         LevelSelection.SetActive(true);
         PlayerMesh.SetActive(false);
         gameObject.SetActive(false);

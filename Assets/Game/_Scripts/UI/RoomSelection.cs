@@ -29,9 +29,9 @@ public class RoomSelection : MonoBehaviour {
 
     public void OnBack()
     {
-        Debug.Log("gameobject : " + this.name);
-        Debug.Log("de activate: " + gameObject.name);
-        Debug.Log("activate: " + LevelSelection.name);
+        //Debug.Log("gameobject : " + this.name);
+        //Debug.Log("de activate: " + gameObject.name);
+       // Debug.Log("activate: " + LevelSelection.name);
         gameObject.SetActive(false);
         LevelSelection.SetActive(true);
     }
@@ -41,9 +41,9 @@ public class RoomSelection : MonoBehaviour {
         if (client.joinRoom(RoomIndex))
         {
             client.setInt("RoomSelect", RoomIndex);
-            Debug.Log("gameobject : " + this.name);
-            Debug.Log("activate: " + loading.name);
-            Debug.Log("de activate: " + gameObject.name);
+            //Debug.Log("gameobject : " + this.name);
+           // Debug.Log("activate: " + loading.name);
+            //Debug.Log("de activate: " + gameObject.name);
             loading.SetActive(true);
             gameObject.SetActive(false);
             
