@@ -206,7 +206,7 @@ public class Client : MonoBehaviour {
         {
             if (getString("PlayerName") != null)
             {
-                TcpSend("QUIT|" + getString("PlayerName"));
+                TcpSend("QUITGAME|" + getString("PlayerName"));
             }
             Debug.Log("quit game");
             if (ReadThread.IsAlive)
