@@ -38,7 +38,7 @@ public class PlayerSelection : MonoBehaviour
     public void OnBack()
     {
         //Debug.Log("Log out");
-        client.TcpSend("QUIT|" + client.getString("PlayerName"));
+        client.TcpSend("QUITGAME|" + client.getString("PlayerName"));
         client.remove("PlayerName");
         //Debug.Log("gameobject : " + this.name);
         //Debug.Log("activate: " + Menu.name);

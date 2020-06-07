@@ -224,15 +224,12 @@ public class Client : MonoBehaviour {
     // login execute
     public void login(string name)
     {
+        
         string data;
         if (name.Equals(""))
             return;
-        
-        if(TcpSend("LOGIN|" + name))
-        {
-            //Debug.Log("LOGIN|" + name);
-            setString("PlayerName", name);
-        }
+        clientName = name;
+        TcpSend("LOGIN|" + name);
 
     }
 
@@ -283,48 +280,26 @@ public class Client : MonoBehaviour {
                         // for each player in state message
                         for (int i = 1; i < Mathf.Min(splited.Length, 4); i++)
                         {
-                            if (!splited[i].Equals("null"))
+                            if (!(splited[i].Equals("null")))
                             {
-                                // make Player a from json an check
                                 Player a = Player.CreateFromJSON(splited[i]);
-                                if (a != null)
+                                bool isIn = false;
+                                for (int j = 0; j < ListPlayer.Count; j++)
                                 {
-                                    if (IsPlaying())
+                                    if (a.name == ListPlayer[j].name)
                                     {
-                                        // if playing so update state game
-                                        for (int j = 0; j < ListPlayer.Count; j++)
-                                        {
-                                            if (a.name == ListPlayer[j].name)
-                                            {
-                                                ListPlayer[j] = a;
-                                                BoolPlayer[j] = true;
-                                            }
-                                        }
-
-
+                                        ListPlayer[j] = a;
+                                        BoolPlayer[j] = true;
+                                        isIn = true;
+                                        break;
                                     }
-                                    else
-                                    {
-                                        //else add if not in
-                                        //Debug.Log("not playing: " + ListPlayer.Count);
-                                        bool isIn = false;
-                                        for (int j = 0; j < ListPlayer.Count; j++)
-                                        {
-                                            if (a.name == ListPlayer[j].name)
-                                            {
-                                                isIn = true;
-                                                break;
-                                            }
-                                        }
+                                }
 
-                                        if (!isIn && ListPlayer.Count < 3)
-                                        {
-                                            //Debug.Log("add " + a.name);
-                                            ListPlayer.Add(a);
-                                            BoolPlayer.Add(true);
-                                        }
-
-                                    }
+                                if (!isIn)
+                                {
+                                    Debug.Log("add " + a.name);
+                                    ListPlayer.Add(a);
+                                    BoolPlayer.Add(true);
                                 }
                             }
 
@@ -338,10 +313,10 @@ public class Client : MonoBehaviour {
                             }
                         }
 
+
                         for (int i = 0; i < BoolPlayer.Count; i++)
                         {
                             BoolPlayer[i] = false;
-                          
                         }
 
                         for (int i = 4; i < splited.Length; i++)
@@ -493,13 +468,7 @@ public class Client : MonoBehaviour {
                         //Debug.Log(data[1]);
                         if (int.Parse(data[1]) == 1)
                         {
-                            PlayerSelection = GameObject.Find("MainMenu_UI").transform.Find("PlayerSelection").gameObject;
-                            PlayerMesh = GameObject.Find("MainMenu_UI").transform.Find("playerMesh").gameObject;
-                            mainMenu = GameObject.Find("MainMenu_UI").transform.Find("mainMenu").gameObject;
-                            PlayerSelection.SetActive(true);
-                            PlayerMesh.SetActive(true);
-                            mainMenu.SetActive(false);
-                            Debug.Log(PlayerMesh);
+                            setString("PlayerName", clientName);
                             setRoomAndLevel(data);
                         }
                         else
@@ -524,11 +493,11 @@ public class Client : MonoBehaviour {
         foreach (Player player in ListPlayer)
         {
             //Debug.Log("find");
-            GameObject p = GameObject.Find(player.name);
+            GameObject p;
 
-            if (p == null)
+            if (GameObject.Find(player.name) == null && player.health == 100)
             {
-                //Debug.Log("create");
+                Debug.Log("create:" + player.name);
                 p = GameObject.Instantiate(PlayersPrefabs[player.plane - 1], player.position, Quaternion.identity) as GameObject;
                 p.name = player.name;
                 Text playerName = p.GetComponentInChildren<Text>();
@@ -641,7 +610,7 @@ public class Client : MonoBehaviour {
         {
             for (int i = 0; i < ListPlayer.Count; i++)
             {
-                if (ListPlayer[i].enable && ListPlayer[i].name == player.name)
+                if (ListPlayer[i].name == player.name)
                 {
                     player.transform.position = Vector3.MoveTowards(player.transform.position, ListPlayer[i].position, Time.deltaTime * 50.1f);
                     HealthController playerHealth = player.GetComponent<HealthController>();
@@ -649,9 +618,18 @@ public class Client : MonoBehaviour {
                     playerHealth.UpdateHealthProgress(playerHealth.HealthCount);
                     playerHealth.CheckDeadOrAlive();
                 }
-                else if(!ListPlayer[i].enable && ListPlayer[i].name == player.name)
+            }
+        }
+        else
+        {
+            for (int i = 0; i < ListPlayer.Count; i++)
+            {
+                if (ListPlayer[i].name == player.name)
                 {
-                    player.SetActive(false);
+                    HealthController playerHealth = player.GetComponent<HealthController>();
+                    playerHealth.HealthCount = ListPlayer[i].health;
+                    playerHealth.UpdateHealthProgress(playerHealth.HealthCount);
+                    playerHealth.CheckDeadOrAlive();
                 }
             }
         }
@@ -673,7 +651,7 @@ public class Client : MonoBehaviour {
 
         }
         //Debug.Log(endGame);
-        if(endGame == 3)
+        if(endGame == ListPlayer.Count - 1)
         {
             return true;
         }
