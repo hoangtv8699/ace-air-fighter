@@ -1,6 +1,6 @@
 WindowsStandalone
 PlayerPath?
-C:/Users/Hiddenpants-H/Desktop/test.exe
+C:/Users/Hiddenpants-H/Desktop/ace-air-fighter.exe
 SceneListBegin?
 Assets/Game/_Scenes/MainMenu.unity
 Assets/Game/_Scenes/GamePlay.unity
@@ -254,7 +254,7 @@ c2275a8bfbb9f9942cad75ecdfded41d UnityEngine.HoloLens.dll:UnityEngine.XR.WSA.Spa
 c08b196716247885d3b27f7f282b2568 Assembly-CSharp.dll:UnityStandardAssets.ImageEffects.SepiaTone
 a51173280b81aed3c792da6e9cebc4cd Assembly-CSharp.dll:UnityStandardAssets.ImageEffects.Twirl
 a51173280b81aed3c792da6e9cebc4cd Assembly-CSharp.dll:UnityStandardAssets.ImageEffects.Vortex
-565887e537b78228ae773ab80c780fd1 Assembly-CSharp.dll:.CheckName
+ef89194e14cd1fbb6b9b0fa6a340a97f Assembly-CSharp.dll:.CheckName
 2f264043a6bb59ca3369df5a4d180e17 Assembly-CSharp.dll:UnityStandardAssets.ImageEffects.CameraMotionBlur
 9de3a22eca9aefadba2d10d5987cefe3 UnityEngine.SpatialTracking.dll:UnityEngine.SpatialTracking.TrackedPoseDriver
 dfb197e2f07d858e009efaf2e6734a47 Assembly-CSharp.dll:.ObjectRotate
@@ -279,7 +279,7 @@ aa13baec1c19c8fa869cb21cb01a3767 Assembly-CSharp.dll:UnityStandardAssets.Water.W
 05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:.SplineInterpolator
 3ae0dad0b55a80319e1d57c2dce28da7 Assembly-CSharp.dll:UnityStandardAssets.ImageEffects.Tonemapping
 05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:.SpalshScreen
-1ab9f3e45c440b2d2b11ed7e8fd8ffd8 Assembly-CSharp.dll:.Client
+04100a1870225c653ebf9ff120258174 Assembly-CSharp.dll:.Client
 f976c525d1d474d431ef185c783ca0b8 Assembly-CSharp.dll:.UnsufficentCoinsMenu
 189ca5d949086dc8c935f17211c70a93 Assembly-CSharp.dll:.Ace_ingameUiControl
 0f3d4bb7128a287827d041c696039525 Assembly-CSharp.dll:UnityStandardAssets.Utility.AutoMobileShaderSwitch

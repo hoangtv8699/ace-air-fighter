@@ -4,8 +4,7 @@ using UnityEngine.UI;
 public class Loading : MonoBehaviour {
 	
 	void OnEnable () {
-		 
-		Invoke ( "loadLevel",5);
+		Invoke ("loadLevel",5);
 	}
 	
 	// Update is called once per frame

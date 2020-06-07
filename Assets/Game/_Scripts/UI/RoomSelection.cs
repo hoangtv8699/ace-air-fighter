@@ -38,22 +38,24 @@ public class RoomSelection : MonoBehaviour {
 
     public void OnselectPress()
     {
-        if (client.joinRoom(RoomIndex))
-        {
-            client.setInt("RoomSelect", RoomIndex);
-            //Debug.Log("gameobject : " + this.name);
-           // Debug.Log("activate: " + loading.name);
-            //Debug.Log("de activate: " + gameObject.name);
-            loading.SetActive(true);
-            gameObject.SetActive(false);
-            
-        }
+        client.joinRoom(RoomIndex);
+        //if (client.joinRoom(RoomIndex))
+        //{
+
+        //    //Debug.Log("gameobject : " + this.name);
+        //    // Debug.Log("activate: " + loading.name);
+        //    //Debug.Log("de activate: " + gameObject.name);
+        //    loading.SetActive(true);
+        //    gameObject.SetActive(false);
+
+        //}
     }
  
     void UpdateInfo()
     {
         limitBoundsForIndex();
         infoTexts.text = "Room " + RoomIndex;
+        client.setInt("RoomSelect", RoomIndex);
     }
     public void OnNext()
     {

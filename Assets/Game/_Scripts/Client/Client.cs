@@ -14,6 +14,7 @@ public class Client : MonoBehaviour {
     public GameObject[] PlayersPrefabs;
     public GameObject[] EnemysPrefabs;
 
+    private GameObject PlayerSelection, LevelSelection, RoomSelection,  Loading, PlayerMesh, mainMenu;
     private GameObject Notification;
     private GameObject CantConnect;
 
@@ -30,6 +31,7 @@ public class Client : MonoBehaviour {
     private StreamReader TcpReader;
     private Hashtable PlayerData;
     private List<Player> ListPlayer;
+    private List<bool> BoolPlayer;
     private Queue<Enemy> QueueEnemy;
     private List<GameObject> GameObjectPlayer;
     //private List<GameObject> GameObjectEnemy;
@@ -49,11 +51,13 @@ public class Client : MonoBehaviour {
         TcpConnectToServer(hostToConnect, TcpPortToConnect);
         PlayerData = new Hashtable();
         ListPlayer = new List<Player>();
+        BoolPlayer = new List<bool>();
         QueueEnemy = new Queue<Enemy>();
         GameObjectPlayer = new List<GameObject>();
         //GameObjectEnemy = new List<GameObject>();
         DataReaded = new Queue<string>();
         ReadThread = new Thread(ReadData);
+        ReadThread.Start();
         flags = true;
         
     }
@@ -190,11 +194,6 @@ public class Client : MonoBehaviour {
         CloseSocket();
     }
 
-    public void CloseThread()
-    {
-        ReadThread.Abort();
-
-    }
 
     public void CloseSocket()
     {
@@ -207,12 +206,13 @@ public class Client : MonoBehaviour {
             if (getString("PlayerName") != null)
             {
                 TcpSend("QUITGAME|" + getString("PlayerName"));
+                Debug.Log("quit game");
             }
-            Debug.Log("quit game");
-            if (ReadThread.IsAlive)
-            {
-                ReadThread.Abort();
-            }
+
+            //if (ReadThread.IsAlive)
+            //{
+            //    ReadThread.Abort();
+            //}
             
             TcpWriter.Close();
             TcpReader.Close();
@@ -222,48 +222,18 @@ public class Client : MonoBehaviour {
         }
     }
     // login execute
-    public bool login(string name)
+    public void login(string name)
     {
         string data;
         if (name.Equals(""))
-            return false;
+            return;
         
         if(TcpSend("LOGIN|" + name))
         {
             //Debug.Log("LOGIN|" + name);
-        }
-        else
-        {
-            return false;
-        }
-
-        data = TcpRead();
-        //Debug.Log(data);
-
-        if (data != null && check(data.Split('|')))
-        {
             setString("PlayerName", name);
-            return true;
-        }
-        return false;
-    }
-       
-    private bool check(string[] data)
-    {
-        if (data[0].Contains("OGIN") && int.Parse(data[1]) == 1)
-        {
-            setRoomAndLevel(data);
-            return true;
-        }
-        else if(data[0].Contains("OGIN") && int.Parse(data[1]) == 0)
-        {
-            Notification = GameObject.Find("MainMenu_UI").transform.Find("Notification").gameObject;
-            Text text = Notification.GetComponentInChildren<Text>();
-            text.text = "Login fail, try another name";
-            Notification.SetActive(true);
         }
 
-        return false;
     }
 
     public void closeNotification()
@@ -284,38 +254,15 @@ public class Client : MonoBehaviour {
         }
     }
     // join room execute
-    public bool joinRoom(int RoomIndex)
+    public void joinRoom(int RoomIndex)
     {
-        bool temp = false;
         string[] data;
         string name = getString("PlayerName");
         int LevelSelect = getInt("LevelSelect");
         int NumberOfRoom = getInt("Level" + LevelSelect);
 
-        //Debug.Log("JOIN_ROOM|" + name + "|" + (LevelSelect * NumberOfRoom + RoomIndex) + "|" + getInt("PlayerIndex"));
-        TcpReader.DiscardBufferedData();
+        Debug.Log("JOIN_ROOM|" + name + "|" + (LevelSelect * NumberOfRoom + RoomIndex) + "|" + getInt("PlayerIndex"));
         TcpSend("JOIN_ROOM|" + name + "|" + (LevelSelect * NumberOfRoom + RoomIndex) + "|" + getInt("PlayerIndex"));
-        string tmp = TcpRead();
-        data = tmp.Split('|');
-
-        Debug.Log(tmp);
-
-        if (data[0].Contains("OIN_ROOM") && int.Parse(data[1]) == 1)
-        {
-            temp = true;
-
-            // create a new thread to handle read data
-            ReadThread = new Thread(ReadData);
-            ReadThread.Start();
-
-        }else if (data[0].Contains("OIN_ROOM") && int.Parse(data[1]) == 0)
-        {
-            Notification = GameObject.Find("MainMenu_UI").transform.Find("Notification").gameObject;
-            Text text = Notification.GetComponentInChildren<Text>();
-            text.text = "Room full, try another";
-            Notification.SetActive(true);
-        }
-        return temp;
     }
     // read data from server message
     void ReadData()
@@ -350,6 +297,7 @@ public class Client : MonoBehaviour {
                                             if (a.name == ListPlayer[j].name)
                                             {
                                                 ListPlayer[j] = a;
+                                                BoolPlayer[j] = true;
                                             }
                                         }
 
@@ -373,12 +321,27 @@ public class Client : MonoBehaviour {
                                         {
                                             //Debug.Log("add " + a.name);
                                             ListPlayer.Add(a);
+                                            BoolPlayer.Add(true);
                                         }
 
                                     }
                                 }
                             }
 
+                        }
+
+                        for (int i = 0; i < BoolPlayer.Count; i++)
+                        {
+                            if (!BoolPlayer[i])
+                            {
+                                ListPlayer[i].health = 0;
+                            }
+                        }
+
+                        for (int i = 0; i < BoolPlayer.Count; i++)
+                        {
+                            BoolPlayer[i] = false;
+                          
                         }
 
                         for (int i = 4; i < splited.Length; i++)
@@ -397,10 +360,8 @@ public class Client : MonoBehaviour {
                         break;
                     case "SHOT":
                         // push data to stack for main thread and use guard
-                        while (guard) ;
-                        guard = true;
+                        //Debug.Log("SHOTTTTTTTT");
                         DataReaded.Enqueue(data);
-                        guard = false;
                         // to do
                         break;
                     case "START":
@@ -409,17 +370,15 @@ public class Client : MonoBehaviour {
                         break;
                     default:
                         // push data to stack for main thread and use guard
-                        Debug.Log("data readed: " + data);
-                        while (guard) ;
-                        guard = true;
+                       
                         DataReaded.Enqueue(data);
-                        guard = false;
                         // to do
                         break;
                 }
 
             }
-        }catch(ThreadAbortException){
+        }catch(Exception e){
+            Debug.Log(e);
             return;
          
         }
@@ -512,8 +471,44 @@ public class Client : MonoBehaviour {
                             enemyDestroy.CheckDeadOrAlive();
                         }
                         break;
-                    case "JOINROOM":
-
+                    case "JOIN_ROOM":
+                        //Debug.Log(data[1]);
+                        if (int.Parse(data[1]) == 1)
+                        {
+                            Debug.Log("joinroom");
+                            Loading = GameObject.Find("MainMenu_UI").transform.Find("Loading").gameObject;
+                            RoomSelection = GameObject.Find("MainMenu_UI").transform.Find("RoomSelection").gameObject;
+                            Loading.SetActive(true);
+                            RoomSelection.SetActive(false);
+                        }
+                        else
+                        {
+                            Notification = GameObject.Find("MainMenu_UI").transform.Find("Notification").gameObject;
+                            Text text = Notification.GetComponentInChildren<Text>();
+                            text.text = "Room full, try another";
+                            Notification.SetActive(true);
+                        }
+                        break;
+                    case "LOGIN":
+                        //Debug.Log(data[1]);
+                        if (int.Parse(data[1]) == 1)
+                        {
+                            PlayerSelection = GameObject.Find("MainMenu_UI").transform.Find("PlayerSelection").gameObject;
+                            PlayerMesh = GameObject.Find("MainMenu_UI").transform.Find("playerMesh").gameObject;
+                            mainMenu = GameObject.Find("MainMenu_UI").transform.Find("mainMenu").gameObject;
+                            PlayerSelection.SetActive(true);
+                            PlayerMesh.SetActive(true);
+                            mainMenu.SetActive(false);
+                            Debug.Log(PlayerMesh);
+                            setRoomAndLevel(data);
+                        }
+                        else
+                        {
+                            Notification = GameObject.Find("MainMenu_UI").transform.Find("Notification").gameObject;
+                            Text text = Notification.GetComponentInChildren<Text>();
+                            text.text = "Login fail, try another name";
+                            Notification.SetActive(true);
+                        }
 
                         break;
                 }
@@ -567,6 +562,9 @@ public class Client : MonoBehaviour {
     public void QuitRoom()
     {
         isPlaying = false;
+        ListPlayer.Clear();
+        BoolPlayer.Clear();
+        GameObjectPlayer.Clear();
         Debug.Log("QUITROOM|" + getString("PlayerName"));
         TcpSend("QUITROOM|" + getString("PlayerName"));
     }
@@ -622,6 +620,7 @@ public class Client : MonoBehaviour {
 
     public void Shot()
     {
+        Debug.Log("SHOT");
         TcpSend("SHOT|" + getString("PlayerName"));
     }
 
