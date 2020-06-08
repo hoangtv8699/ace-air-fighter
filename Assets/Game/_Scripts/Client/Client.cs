@@ -269,7 +269,7 @@ public class Client : MonoBehaviour {
             while (true)
             {
                 string data = TcpRead();
-                Debug.Log(data);
+                //Debug.Log(data);
                 //if (data == null) continue;
                 string[] splited = data.Split('|');
 
@@ -289,7 +289,7 @@ public class Client : MonoBehaviour {
                                     if (a.name == ListPlayer[j].name)
                                     {
                                         ListPlayer[j] = a;
-                                        BoolPlayer[j] = true;
+                                        ListPlayer[j].enable = true;
                                         isIn = true;
                                         break;
                                     }
@@ -298,25 +298,27 @@ public class Client : MonoBehaviour {
                                 if (!isIn)
                                 {
                                     Debug.Log("add " + a.name);
+                                    a.enable = true;
                                     ListPlayer.Add(a);
-                                    BoolPlayer.Add(true);
                                 }
                             }
 
                         }
 
-                        for (int i = 0; i < BoolPlayer.Count; i++)
+                        for (int i = 0; i < ListPlayer.Count; i++)
                         {
-                            if (!BoolPlayer[i])
+                            if (!ListPlayer[i].enable)
                             {
+                                //Debug.Log(data);
+                                Debug.Log("health = 0: " + ListPlayer[i].name);
                                 ListPlayer[i].health = 0;
                             }
                         }
 
 
-                        for (int i = 0; i < BoolPlayer.Count; i++)
+                        for (int i = 0; i < ListPlayer.Count; i++)
                         {
-                            BoolPlayer[i] = false;
+                            ListPlayer[i].enable = false;
                         }
 
                         for (int i = 4; i < splited.Length; i++)
@@ -497,7 +499,7 @@ public class Client : MonoBehaviour {
 
             if (GameObject.Find(player.name) == null && player.health == 100)
             {
-                Debug.Log("create:" + player.name);
+                //Debug.Log("create:" + player.name);
                 p = GameObject.Instantiate(PlayersPrefabs[player.plane - 1], player.position, Quaternion.identity) as GameObject;
                 p.name = player.name;
                 Text playerName = p.GetComponentInChildren<Text>();
@@ -650,9 +652,11 @@ public class Client : MonoBehaviour {
             }
 
         }
-        //Debug.Log(endGame);
-        if(endGame == ListPlayer.Count - 1)
+        
+        if(endGame == ListPlayer.Count)
         {
+            Debug.Log(endGame);
+            Debug.Log(ListPlayer.Count);
             return true;
         }
         else

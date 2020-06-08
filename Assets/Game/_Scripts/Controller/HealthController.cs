@@ -27,8 +27,6 @@ public class  HealthController : MonoBehaviour
         }
        
         //force setting minimum healthCoung and decrement
-        if (HealthCount < 50)
-			HealthCount = 0;
 		if (HealthDecrementCount < 5)
 			HealthDecrementCount = 5;
 
@@ -104,18 +102,13 @@ public class  HealthController : MonoBehaviour
                 PlayerController playerController = gameObject.GetComponent<PlayerController>();
                 if (this.name.Equals(client.getString("PlayerName")) && !playerController.isShieldOn)
                 {
-                    //Debug.Log("player get shot: " + this.name);
                     client.PlayerGetShot();
-                    //HealthCount -= HealthDecrementCount;
                     Camera.main.GetComponent<CameraShake>().enabled = true;
                     Invoke("CameraShakeReset", 0.5f);
-                    //UpdateHealthProgress(HealthCount);
                 }
                 
 
             } else {
-
-                //Debug.Log("enemy get shot: " + this.name);
                 if (HealthCount <= 20)
                 {
                     client.Destroy(this.name);
@@ -124,51 +117,9 @@ public class  HealthController : MonoBehaviour
                 {
                     client.EnemyGetShot(this.name);
                 }
-                
-
-				//if (isBigEnemy) {
-				//	float collisionDistance = Vector3.Distance (thisTransFrom.position, incoming.transform.position);
-
-				//	if (collisionDistance < 15) {
- 
-				//		HealthCount -= HealthDecrementCount * 2;
-				//	}
-
-				//}
-                 
-				//HealthCount -= HealthDecrementCount;
-				////Ace_ingameUiControl.Static.AddScore (10);
-				//if (healthBar != null) {
-				//	healthBar.fillAmount = HealthCount * 0.01f;
-				//}
-			
-			
 			}
 			CheckDeadOrAlive ();
         }
-        //else if(incoming.tag.Contains("Enemy") && isPlayer)
-        //{
-        //    Debug.Log("Tigger enter: " + incoming.tag);
-        //    HealthCount = 0;
-        //    UpdateHealthProgress(HealthCount);
-            
-        //    Camera.main.GetComponent<CameraShake>().enabled = true;
-        //    Invoke("CameraShakeReset", 0.5f);
-        //    CheckDeadOrAlive();
-        //}
-        //else if (incoming.tag.Contains("Player") && this.tag.Contains("Enemy"))
-        //{
-        //    Debug.Log("Tigger enter: " + incoming.tag);
-        //    HealthCount = 0;
-        //    Ace_ingameUiControl.Static.UpdateHealthProgress(HealthCount);
-            
-        //    Camera.main.GetComponent<CameraShake>().enabled = true;
-        //    Invoke("CameraShakeReset", 0.5f);
-        //    CheckDeadOrAlive();
-        //}
-
-
-
     }
 
     bool doOnce = false;
@@ -178,8 +129,9 @@ public class  HealthController : MonoBehaviour
 
 		if (HealthCount <= 0 && doOnce == false) {
 
-			//Debug.Log (gameObject.name + " is dead");
+			Debug.Log (gameObject.name + " is dead");
 			this.enabled = false;
+            Debug.Log("Destroy: " + this.name + " health: " + HealthCount);
 			Destroy (gameObject, 15);
 
 			if (this.tag.Contains ("Player")) {
