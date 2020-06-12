@@ -33,7 +33,7 @@ public class Client : MonoBehaviour {
     private List<Player> ListPlayer;
     private List<bool> BoolPlayer;
     private Queue<Enemy> QueueEnemy;
-    private List<GameObject> GameObjectPlayer;
+    //private List<GameObject> GameObjectPlayer;
     //private List<GameObject> GameObjectEnemy;
     private Queue<string> DataReaded;
     private Thread ReadThread;
@@ -46,14 +46,14 @@ public class Client : MonoBehaviour {
         isPlaying = false;
         isReady = false;
         guard = false;
-        Debug.Log("start tcp");
+        //Debug.Log("start tcp");
         DontDestroyOnLoad(gameObject);
         TcpConnectToServer(hostToConnect, TcpPortToConnect);
         PlayerData = new Hashtable();
         ListPlayer = new List<Player>();
         BoolPlayer = new List<bool>();
         QueueEnemy = new Queue<Enemy>();
-        GameObjectPlayer = new List<GameObject>();
+        //GameObjectPlayer = new List<GameObject>();
         //GameObjectEnemy = new List<GameObject>();
         DataReaded = new Queue<string>();
         ReadThread = new Thread(ReadData);
@@ -74,7 +74,7 @@ public class Client : MonoBehaviour {
     public void updateScore(Text[] name, Text[] score)
     {
         ListPlayer.Sort(sortPlayerScore);
-        for(int i = 0; i < ListPlayer.Count; i++)
+        for(int i = 0; i < Mathf.Min(ListPlayer.Count, 3); i++)
         {
             name[i].text = ListPlayer[i].name + " : ";
             score[i].text = ListPlayer[i].score.ToString();
@@ -140,7 +140,7 @@ public class Client : MonoBehaviour {
             
             CantConnect = GameObject.Find("MainMenu_UI").transform.Find("CantConnect").gameObject;
             CantConnect.SetActive(true);
-            Debug.Log("Socket error " + e.Message);
+            //Debug.Log("Socket error " + e.Message);
         }
 
         return TcpReady;
@@ -161,7 +161,7 @@ public class Client : MonoBehaviour {
         catch (Exception e)
         {
             CantConnect.SetActive(true);
-            Debug.Log("Socket error " + e.Message);
+            //Debug.Log("Socket error " + e.Message);
         }
 
         //return TcpReady;
@@ -206,7 +206,7 @@ public class Client : MonoBehaviour {
             if (getString("PlayerName") != null)
             {
                 TcpSend("QUITGAME|" + getString("PlayerName"));
-                Debug.Log("quit game");
+                //Debug.Log("quit game");
             }
 
             //if (ReadThread.IsAlive)
@@ -258,7 +258,7 @@ public class Client : MonoBehaviour {
         int LevelSelect = getInt("LevelSelect");
         int NumberOfRoom = getInt("Level" + LevelSelect);
 
-        Debug.Log("JOIN_ROOM|" + name + "|" + (LevelSelect * NumberOfRoom + RoomIndex) + "|" + getInt("PlayerIndex"));
+        //Debug.Log("JOIN_ROOM|" + name + "|" + (LevelSelect * NumberOfRoom + RoomIndex) + "|" + getInt("PlayerIndex"));
         TcpSend("JOIN_ROOM|" + name + "|" + (LevelSelect * NumberOfRoom + RoomIndex) + "|" + getInt("PlayerIndex"));
     }
     // read data from server message
@@ -276,50 +276,63 @@ public class Client : MonoBehaviour {
                 switch (splited[0])
                 {
                     case "STATE":
-                        
-                        // for each player in state message
-                        for (int i = 1; i < Mathf.Min(splited.Length, 4); i++)
+
+                        List<Player> raw = new List<Player>();
+
+                        for (int i = 1; i < 4; i++)
                         {
                             if (!(splited[i].Equals("null")))
                             {
                                 Player a = Player.CreateFromJSON(splited[i]);
-                                bool isIn = false;
-                                for (int j = 0; j < ListPlayer.Count; j++)
-                                {
-                                    if (a.name == ListPlayer[j].name)
-                                    {
-                                        ListPlayer[j] = a;
-                                        ListPlayer[j].enable = true;
-                                        isIn = true;
-                                        break;
-                                    }
-                                }
-
-                                if (!isIn)
-                                {
-                                    Debug.Log("add " + a.name);
-                                    a.enable = true;
-                                    ListPlayer.Add(a);
-                                }
+                                raw.Add(a);
                             }
-
+                            
                         }
 
-                        for (int i = 0; i < ListPlayer.Count; i++)
+                        // for each player in state message
+                        for (int i = 0; i < raw.Count; i++)
                         {
-                            if (!ListPlayer[i].enable)
+                            bool isIn = false;
+                            for (int j = 0; j < ListPlayer.Count; j++)
                             {
-                                //Debug.Log(data);
-                                Debug.Log("health = 0: " + ListPlayer[i].name);
-                                ListPlayer[i].health = 0;
+                                if (ListPlayer[j].name.Equals(raw[i].name))
+                                {
+                                    ListPlayer[j] = raw[i];
+                                    isIn = true;
+                                    break;
+                                }
+                            }
+                            //Debug.Log("isin " + isIn );
+
+                            if (!isIn)
+                            {
+                                //Debug.Log("add " + a.name);
+                                //raw[i].enable = true;
+                                ListPlayer.Add(raw[i]);
+                          
                             }
                         }
+
+                        //Debug.Log("raw " + raw.Count + " list player " + ListPlayer.Count);
 
 
                         for (int i = 0; i < ListPlayer.Count; i++)
                         {
-                            ListPlayer[i].enable = false;
+                            bool isin = false;
+                            for(int j = 0; j < raw.Count; j++)
+                            {
+                                if (ListPlayer[i].name.Equals(raw[j].name))
+                                {
+                                    isin = true;
+                                    break;
+                                }
+                            }
+                            if (!isin)
+                            {
+                                ListPlayer.Remove(ListPlayer[i]);
+                            }
                         }
+                        
 
                         for (int i = 4; i < splited.Length; i++)
                         {
@@ -378,7 +391,7 @@ public class Client : MonoBehaviour {
                         {
                             GunController gun = playerShot.GetComponent<GunController>();
                             gun.FireBullets();
-                            Debug.Log("firebullet " + data[1]);
+                            //Debug.Log("firebullet " + data[1]);
                         }
                         break;
                     case "ITEM":
@@ -431,7 +444,7 @@ public class Client : MonoBehaviour {
                         break;
                     case "SHOTED":
                         HealthController enemyHealth = GameObject.Find(data[1]).GetComponent<HealthController>();
-                        Debug.Log("decre health " + data[1] + " " + Mathf.Max(0, enemyHealth.HealthCount - 20));
+                        //Debug.Log("decre health " + data[1] + " " + Mathf.Max(0, enemyHealth.HealthCount - 20));
                         if (enemyHealth != null)
                         {
                             
@@ -452,7 +465,7 @@ public class Client : MonoBehaviour {
                         //Debug.Log(data[1]);
                         if (int.Parse(data[1]) == 1)
                         {
-                            Debug.Log("joinroom");
+                            //Debug.Log("joinroom");
                             Loading = GameObject.Find("MainMenu_UI").transform.Find("Loading").gameObject;
                             RoomSelection = GameObject.Find("MainMenu_UI").transform.Find("RoomSelection").gameObject;
                             Loading.SetActive(true);
@@ -497,14 +510,14 @@ public class Client : MonoBehaviour {
             //Debug.Log("find");
             GameObject p;
 
-            if (GameObject.Find(player.name) == null && player.health == 100)
+            if (GameObject.Find(player.name) == null && !isPlaying)
             {
                 //Debug.Log("create:" + player.name);
                 p = GameObject.Instantiate(PlayersPrefabs[player.plane - 1], player.position, Quaternion.identity) as GameObject;
                 p.name = player.name;
                 Text playerName = p.GetComponentInChildren<Text>();
                 playerName.text = p.name;
-                GameObjectPlayer.Add(p);
+                //GameObjectPlayer.Add(p);
             }
         }
     }
@@ -535,8 +548,8 @@ public class Client : MonoBehaviour {
         isPlaying = false;
         ListPlayer.Clear();
         BoolPlayer.Clear();
-        GameObjectPlayer.Clear();
-        Debug.Log("QUITROOM|" + getString("PlayerName"));
+        //GameObjectPlayer.Clear();
+        //Debug.Log("QUITROOM|" + getString("PlayerName"));
         TcpSend("QUITROOM|" + getString("PlayerName"));
     }
 
@@ -551,35 +564,35 @@ public class Client : MonoBehaviour {
     public void DestroyTimeOut(string id)
     {
         TcpSend("DESTROY|" + id);
-        Debug.Log("DESTROY|" + id);
+        //Debug.Log("DESTROY|" + id);
     }
 
     //call when item time out
     public void DestroyItemTimeOut(string id)
     {
         TcpSend("DESTROYITEM|" + id);
-        Debug.Log("DESTROYITEM|" + id);
+        //Debug.Log("DESTROYITEM|" + id);
     }
 
     // call when enemy get shot
     public void EnemyGetShot(string id)
     {
         TcpSend("SHOTED|" + id);
-        Debug.Log("SHOTED|" + id);
+        //Debug.Log("SHOTED|" + id);
     }
 
     // call when player get shot
     public void PlayerGetShot()
     {
         TcpSend("GETSHOTED|" + getString("PlayerName"));
-        Debug.Log("GETSHOTED|" + getString("PlayerName"));
+        //Debug.Log("GETSHOTED|" + getString("PlayerName"));
     }
 
     // send item was picked by player
     public void Item(string item, string id)
     {
         TcpSend("ITEM|" + item + "|" + id + "|" + getString("PlayerName"));
-        Debug.Log("ITEM|" + item + "|" + id + "|" + getString("PlayerName"));
+        //Debug.Log("ITEM|" + item + "|" + id + "|" + getString("PlayerName"));
     }
 
     // send ready
@@ -591,7 +604,7 @@ public class Client : MonoBehaviour {
 
     public void Shot()
     {
-        Debug.Log("SHOT");
+        //Debug.Log("SHOT");
         TcpSend("SHOT|" + getString("PlayerName"));
     }
 
@@ -612,7 +625,7 @@ public class Client : MonoBehaviour {
         {
             for (int i = 0; i < ListPlayer.Count; i++)
             {
-                if (ListPlayer[i].name == player.name)
+                if (ListPlayer[i].name.Equals(player.name))
                 {
                     player.transform.position = Vector3.MoveTowards(player.transform.position, ListPlayer[i].position, Time.deltaTime * 50.1f);
                     HealthController playerHealth = player.GetComponent<HealthController>();
@@ -624,15 +637,28 @@ public class Client : MonoBehaviour {
         }
         else
         {
+            bool isin = false;
             for (int i = 0; i < ListPlayer.Count; i++)
             {
-                if (ListPlayer[i].name == player.name)
+                if (ListPlayer[i].name.Equals(player.name))
                 {
+
                     HealthController playerHealth = player.GetComponent<HealthController>();
                     playerHealth.HealthCount = ListPlayer[i].health;
+                    //Debug.Log("health check: " + ListPlayer[i].health + " name :" + ListPlayer[i].name);
                     playerHealth.UpdateHealthProgress(playerHealth.HealthCount);
                     playerHealth.CheckDeadOrAlive();
+                    isin = true;
+                    break;
                 }
+            }
+
+            if (!isin)
+            {
+                HealthController playerHealth = player.GetComponent<HealthController>();
+                playerHealth.HealthCount = 0;
+                //Debug.Log("health check: " + ListPlayer[i].health + " name :" + ListPlayer[i].name);
+                playerHealth.CheckDeadOrAlive();
             }
         }
     }
@@ -644,19 +670,20 @@ public class Client : MonoBehaviour {
         {
             for (int i = 0; i < ListPlayer.Count; i++)
             {
-                if (ListPlayer[i].health == 0)
+                if (ListPlayer[i].health <= 0)
                 {
                     endGame++;
                 }
-               
+
             }
 
         }
-        
-        if(endGame == ListPlayer.Count)
+
+        Debug.Log(endGame + " " + ListPlayer.Count);
+        if (endGame == ListPlayer.Count)
         {
-            Debug.Log(endGame);
-            Debug.Log(ListPlayer.Count);
+            //Debug.Log(endGame);
+            //Debug.Log(ListPlayer.Count);
             return true;
         }
         else

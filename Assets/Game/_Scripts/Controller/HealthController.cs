@@ -120,6 +120,14 @@ public class  HealthController : MonoBehaviour
 			}
 			CheckDeadOrAlive ();
         }
+
+        if (incoming.tag.Equals("Enemy") && this.name.Equals(client.getString("PlayerName")))
+        {
+            for (int i = 0; i < 5; i++)
+            {
+                client.PlayerGetShot();
+            }
+        }
     }
 
     bool doOnce = false;
@@ -129,9 +137,9 @@ public class  HealthController : MonoBehaviour
 
 		if (HealthCount <= 0 && doOnce == false) {
 
-			Debug.Log (gameObject.name + " is dead");
+			//Debug.Log (gameObject.name + " is dead");
 			this.enabled = false;
-            Debug.Log("Destroy: " + this.name + " health: " + HealthCount);
+            //Debug.Log("Destroy: " + this.name + " health: " + HealthCount);
 			Destroy (gameObject, 15);
 
 			if (this.tag.Contains ("Player")) {

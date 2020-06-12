@@ -59,6 +59,7 @@ public class Ace_ingameUiControl : MonoBehaviour
         if (client.checkEndGame())
         {
             gameEndMenu.SetActive(true);
+            FinalScore();
         }
     }
 
