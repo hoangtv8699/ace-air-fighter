@@ -623,6 +623,7 @@ public class Client : MonoBehaviour {
     {
         if (IsPlaying())
         {
+            bool isin = false;
             for (int i = 0; i < ListPlayer.Count; i++)
             {
                 if (ListPlayer[i].name.Equals(player.name))
@@ -630,9 +631,20 @@ public class Client : MonoBehaviour {
                     player.transform.position = Vector3.MoveTowards(player.transform.position, ListPlayer[i].position, Time.deltaTime * 50.1f);
                     HealthController playerHealth = player.GetComponent<HealthController>();
                     playerHealth.HealthCount = ListPlayer[i].health;
+                    //Debug.Log("health check: " + ListPlayer[i].health + " name :" + ListPlayer[i].name);
                     playerHealth.UpdateHealthProgress(playerHealth.HealthCount);
                     playerHealth.CheckDeadOrAlive();
+                    isin = true;
+                    break;
                 }
+            }
+
+            if (!isin)
+            {
+                HealthController playerHealth = player.GetComponent<HealthController>();
+                playerHealth.HealthCount = 0;
+                //Debug.Log("health check: " + ListPlayer[i].health + " name :" + ListPlayer[i].name);
+                playerHealth.CheckDeadOrAlive();
             }
         }
         else
@@ -710,7 +722,11 @@ public class Client : MonoBehaviour {
         // if playing update position
         //UpdateMove();
         handle();
-        UpdateEnemyOnScence();
+        if (isPlaying)
+        {
+            UpdateEnemyOnScence();
+        }
+        
     }
 
     [Serializable]

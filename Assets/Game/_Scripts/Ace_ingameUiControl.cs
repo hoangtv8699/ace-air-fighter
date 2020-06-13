@@ -111,6 +111,7 @@ public class Ace_ingameUiControl : MonoBehaviour
 
     public void MainMenu()
     {
+        client.QuitRoom();
         //client.CloseThread();
         SceneManager.LoadScene("MainMenu");
     }
