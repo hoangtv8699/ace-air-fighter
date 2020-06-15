@@ -33,8 +33,6 @@ public class Client : MonoBehaviour {
     private List<Player> ListPlayer;
     private List<bool> BoolPlayer;
     private Queue<Enemy> QueueEnemy;
-    //private List<GameObject> GameObjectPlayer;
-    //private List<GameObject> GameObjectEnemy;
     private Queue<string> DataReaded;
     private Thread ReadThread;
     private bool flags;
@@ -360,7 +358,7 @@ public class Client : MonoBehaviour {
                         break;
                     default:
                         // push data to stack for main thread and use guard
-                       
+                        Debug.Log(data);
                         DataReaded.Enqueue(data);
                         // to do
                         break;
@@ -387,12 +385,8 @@ public class Client : MonoBehaviour {
                 {
                     case "SHOT":
                         GameObject playerShot = GameObject.Find(data[1]);
-                        if (playerShot.active)
-                        {
-                            GunController gun = playerShot.GetComponent<GunController>();
-                            gun.FireBullets();
-                            //Debug.Log("firebullet " + data[1]);
-                        }
+                        GunController gun = playerShot.GetComponent<GunController>();
+                        gun.FireBullets();
                         break;
                     case "ITEM":
                         switch (data[1])
@@ -415,7 +409,6 @@ public class Client : MonoBehaviour {
                                 {
                                     Destroy(Shielditem);
                                 }
-                                break;
                                 break;
                             case "HEALTH":
                                 GameObject Healthitem = GameObject.Find("HealthPickup" + "|" + data[2]);
@@ -592,7 +585,7 @@ public class Client : MonoBehaviour {
     public void Item(string item, string id)
     {
         TcpSend("ITEM|" + item + "|" + id + "|" + getString("PlayerName"));
-        //Debug.Log("ITEM|" + item + "|" + id + "|" + getString("PlayerName"));
+        Debug.Log("ITEM|" + item + "|" + id + "|" + getString("PlayerName"));
     }
 
     // send ready
@@ -725,6 +718,14 @@ public class Client : MonoBehaviour {
         if (isPlaying)
         {
             UpdateEnemyOnScence();
+        }
+        else
+        {
+            while (QueueEnemy.Count > 0)
+            {
+                Enemy enemy = QueueEnemy.Dequeue();
+
+            }
         }
         
     }
