@@ -71,7 +71,7 @@ public class Client : MonoBehaviour {
 
     public void updateScore(Text[] name, Text[] score)
     {
-        ListPlayer.Sort(sortPlayerScore);
+        //ListPlayer.Sort(sortPlayerScore);
         for(int i = 0; i < Mathf.Min(ListPlayer.Count, 3); i++)
         {
             name[i].text = ListPlayer[i].name + " : ";
@@ -358,7 +358,7 @@ public class Client : MonoBehaviour {
                         break;
                     default:
                         // push data to stack for main thread and use guard
-                        Debug.Log(data);
+                        //Debug.Log(data);
                         DataReaded.Enqueue(data);
                         // to do
                         break;
@@ -419,10 +419,12 @@ public class Client : MonoBehaviour {
                                 }
                                 break;
                             case "GUN":
+                                
                                 GameObject player = GameObject.Find(data[3]);
                                 GameObject item = GameObject.Find("GunPickup" + "|" +data[2]);
+                                Debug.Log(player.name + " increagun");
 
-                                if(player != null)
+                                if (player != null)
                                 {
                                     PlayerController playerscript = player.GetComponent<PlayerController>();
                                     playerscript.IncreaseGun();

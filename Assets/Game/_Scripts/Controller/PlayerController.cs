@@ -31,13 +31,13 @@ public class PlayerController : MonoBehaviour
 	  AnimationCurve PlayerRotationCurve = new AnimationCurve(new Keyframe(0, -4), new Keyframe(1, 4));
 
 	 HealthController playerHealthScript;
-	 public static GunController gunScript;
+	 GunController gunScript;
 	void OnEnable ()
 	{
         isShieldOn = false;
         client = GameObject.FindGameObjectWithTag("client").GetComponent<Client>();
-        playerHealthScript = GetComponent<HealthController> ();
-		gunScript = GetComponent<GunController> ();
+        playerHealthScript = gameObject.GetComponent<HealthController> ();
+		gunScript = gameObject.GetComponent<GunController> ();
 
 	}
 	 

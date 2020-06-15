@@ -32,15 +32,6 @@ public class  HealthController : MonoBehaviour
 
 		thisTransFrom = transform;
 
-		if (PlayerController.gunScript.currentGunType == GunType.Dual) {
-			HealthDecrementCount = HealthDecrementCount * 0.45f;
-		} else if (PlayerController.gunScript.currentGunType == GunType.triple) {
-			HealthDecrementCount = HealthDecrementCount * 0.55f;
-		} else if (PlayerController.gunScript.currentGunType == GunType.Quad) {
-			HealthDecrementCount = HealthDecrementCount * 0.60f;
-		}
-
-
 
 		if (healthBar != null && HealthCount != 100) {
 
